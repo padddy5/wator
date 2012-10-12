@@ -2,6 +2,10 @@
 #include <time.h>
 #include <stdlib.h>
 
+typedef short bool
+#define true 1
+#define false 0
+
 #define MAPSIZE 20
 #define RUNNUMBER 20
 #define UPDATETIME 1
@@ -46,7 +50,7 @@ main()
 	createFish(fishNum, MAPSIZE, fish, fishmove,sharks);
 	
 	//Game loop. Check time against last time world simulated. If greater than 1 second, re-simulate and re-draw world
-	short quit = 0;
+	bool quit = false;
 	//The number of times the scenario has been simulated and displayed.
 	short timesSimulated = 0;
 	//The last time at which the simulation was run and drawn to screen
@@ -55,7 +59,7 @@ main()
 	
 
 	//Game loop (update method)
-	while (quit == 0)
+	while (quit == false)
 	{
 		//The current time
 		time_t thisTime;
@@ -65,7 +69,7 @@ main()
 		if (timesSimulated == RUNNUMBER)
 		{
 			//Exit from loop if simulation run RUNNUMBER times
-			quit = 1;
+			quit = true;
 		}
 		if (thisTime - lastTime > UPDATETIME) //If time since last simulation is greater than UPDATETIME, do the simulation
 		{
