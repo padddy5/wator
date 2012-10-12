@@ -35,7 +35,6 @@ main()
 	for(j = 0; j < sharkNum;) {
 		int r = rand() % mapSize;
 		int r2 = rand() % mapSize;
-		sharks[r][r2] = '*';
 		
 		if(sharks[r][r2] == ' '){
 			sharks[r][r2] = '*';
