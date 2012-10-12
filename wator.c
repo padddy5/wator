@@ -7,8 +7,6 @@ typedef short bool
 #define false 0
 
 #define MAPSIZE 20
-#define RUNNUMBER 20
-#define UPDATETIME 1
 
 void createSharks(int pNum, int pSize, int pSharkArray[][MAPSIZE], int pStarveArray[][MAPSIZE], short pSharkMoveArray[][MAPSIZE]);
 void createFish(int pNum, int pSize, int pFishArray[][MAPSIZE], short pFishMoveArray[][MAPSIZE], int pSharkArray[][MAPSIZE]);
@@ -58,7 +56,8 @@ main()
 	//The last time at which the simulation was run and drawn to screen
 	time_t lastTime;
 	lastTime = time (NULL);
-	
+	short updateNum = 20;
+	short updateTime = 1;
 
 	//Game loop (update method)
 	while (quit == false)
@@ -68,12 +67,12 @@ main()
   		thisTime = time (NULL);
 		
 
-		if (timesSimulated == RUNNUMBER)
+		if (timesSimulated == updateNum)
 		{
 			//Exit from loop if simulation run RUNNUMBER times
 			quit = true;
 		}
-		if (thisTime - lastTime > UPDATETIME) //If time since last simulation is greater than UPDATETIME, do the simulation
+		if (thisTime - lastTime > updateTime) //If time since last simulation is greater than UPDATETIME, do the simulation
 		{
 			int k;
 			for(k = 0; k < MAPSIZE;) {
