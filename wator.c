@@ -30,7 +30,7 @@ main()
 	int starve[MAPSIZE][MAPSIZE];
 
 	
-	// fill all arrays with -1
+	// initialise all arrays
 	int i;
 	for(i = 0; i < MAPSIZE; i++) {
 		int i2;
@@ -46,6 +46,8 @@ main()
 			}
 		}
 	}
+
+	//Create fish and sharks
 	createSharks(sharkNum, MAPSIZE, sharks, starve, sharkmove);
 	createFish(fishNum, MAPSIZE, fish, fishmove,sharks);
 	
@@ -107,6 +109,7 @@ main()
 	}
 
 }
+
 //Create sharks using passed in arrays
 void createSharks(int pNum, int pSize, int pSharkArray[][MAPSIZE], int pStarveArray[][MAPSIZE], short pSharkMoveArray[][MAPSIZE]) {
 	
@@ -124,6 +127,7 @@ void createSharks(int pNum, int pSize, int pSharkArray[][MAPSIZE], int pStarveAr
 		}
 	}
 }
+
 void createFish(int pNum, int pSize, int pFishArray[][MAPSIZE], short pFishMoveArray[][MAPSIZE], int pSharkArray[][MAPSIZE]) {
 	
 	int j;
