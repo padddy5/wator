@@ -32,11 +32,18 @@ main()
 	
 	// Create sharks and add them to array
 	int j;
-	for(j = 0; j < sharkNum; j++) {
+	for(j = 0; j < sharkNum;) {
 		int r = rand() % mapSize;
 		int r2 = rand() % mapSize;
-		sharks[r][r2] = '*'; 
+		sharks[r][r2] = '*';
+		
+		if(sharks[r][r2] == ' '){
+			sharks[r][r2] = '*';
+			j++;
+		}
 	}
+
+	//createSharks(sharkNum, mapSize, sharks);
 
 	// Create fish and add them to array
 	int f;
@@ -76,12 +83,12 @@ main()
 
 }
 
-/*void createSharks(int pNum, int pSize, char pArray[][]) {
+/*void createSharks(int pNum, int pSize, char pArray) {
 	
 	int i;
 	for(i = 0; i < pNum; i++) {
-		int r = rand() % 20;
-		int r2 = rand() % 20;
+		int r = rand() % pSize;
+		int r2 = rand() % pSize;
 		pArray[r][r2] = '*'; 
 	}
 }*/
