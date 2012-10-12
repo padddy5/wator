@@ -3,94 +3,77 @@
 #include <stdlib.h>
 
 #define MAPSIZE 20
+#define RUNNUMBER 20
+#define UPDATETIME 1
 
-void createSharks(int pNum, int pSize, int pSharkArray[][MAPSIZE], int pStarveArray[][MAPSIZE], int pSharkMoveArray[][MAPSIZE]);
-void createFish(int pNum, int pSize, int pFishArray[][MAPSIZE], int pFishMoveArray[][MAPSIZE], int pSharkArray[][MAPSIZE]);
-
+void createSharks(int pNum, int pSize, int pSharkArray[][MAPSIZE], int pStarveArray[][MAPSIZE], short pSharkMoveArray[][MAPSIZE]);
+void createFish(int pNum, int pSize, int pFishArray[][MAPSIZE], short pFishMoveArray[][MAPSIZE], int pSharkArray[][MAPSIZE]);
+void updateFish(int pFishArray[][MAPSIZE], int pSharkArray[][MAPSIZE], short pFishMoveArray[][MAPSIZE]);
+void updateShark(int pSharkArray[][MAPSIZE], int pFishArray[][MAPSIZE], int pStarveArray[][MAPSIZE], short pSharkMoveArray[][MAPSIZE]);
 
 main()
 {
 	srand(time(NULL));
-
-	int mapSize = 22;
 	int sharkNum = 10;
 	int fishNum = 20;		
 
-	//Array of ints to represent shark and fish ages. If -1, fish and shark not alive.
+	//Array of ints to represent shark and fish ages. If -1, no fish or shark at this point.
 	//If not -1, they are alive.
-	int sharks[mapSize][mapSize];
-	int fish[mapSize][mapSize];
-	short fishmove[mapSize][mapSize];
-	short sharkmove[mapSize][mapSize];
-	int starve[mapSize][mapSize];
+	int sharks[MAPSIZE][MAPSIZE];
+	int fish[MAPSIZE][MAPSIZE];
+	short fishmove[MAPSIZE][MAPSIZE];
+	short sharkmove[MAPSIZE][MAPSIZE];
+	int starve[MAPSIZE][MAPSIZE];
 
 	
 	// fill all arrays with -1
 	int i;
-	for(i = 0; i < mapSize; i++) {
+	for(i = 0; i < MAPSIZE; i++) {
 		int i2;
-		for(i2 = 0; i2 < mapSize; i2++) {
+		for(i2 = 0; i2 < MAPSIZE; i2++) {
 			sharks[i][i2] = -1;
 			fish[i][i2] = -1;
 			fishmove[i][i2] = 0;
 			sharkmove[i][i2] = 0;
 			starve[i][i2] = -1;
-			if ( i2 == mapSize ) {
+			if ( i2 == MAPSIZE ) {
 				i++;
 				i2 = 0;			
 			}
 		}
 	}
-	
-	// Create sharks and add them to array
-	int j;
-	for(j = 0; j < sharkNum;) {
-		int r = rand() % mapSize;
-		int r2 = rand() % mapSize;
-
-		if (sharks[r][r2] == -1)
-	    {
-		  	sharks[r][r2] = 0; 
-			starve[r][r2] = 0;
-		  	j++;
-		}
-	}
-
-	// Create fish and add them to array
-	int f;
-	for(f = 0; f < fishNum; ) {
-		int r = rand() % mapSize;
-		int r2 = rand() % mapSize;
-		
-		// Create fish if generated index is empty
-		if(sharks[r][r2] == -1 && fish[r][r2] == -1){
-			fish[r][r2] = 0;
-			f++;
-		}
-	}
+	createSharks(sharkNum, MAPSIZE, sharks, starve, sharkmove);
+	createFish(fishNum, MAPSIZE, fish, fishmove,sharks);
 	
 	//Game loop. Check time against last time world simulated. If greater than 1 second, re-simulate and re-draw world
 	short quit = 0;
+	//The number of times the scenario has been simulated and displayed.
 	short timesSimulated = 0;
+	//The last time at which the simulation was run and drawn to screen
 	time_t lastTime;
 	lastTime = time (NULL);
+	
+
+	//Game loop (update method)
 	while (quit == 0)
 	{
+		//The current time
 		time_t thisTime;
   		thisTime = time (NULL);
 		
 
-		if (timesSimulated == 1000)
+		if (timesSimulated == RUNNUMBER)
 		{
+			//Exit from loop if simulation run RUNNUMBER times
 			quit = 1;
 		}
-		if (thisTime - lastTime > 1000)
+		if (thisTime - lastTime > UPDATETIME) //If time since last simulation is greater than UPDATETIME, do the simulation
 		{
 			int k;
-			for(k = 0; k < mapSize;) {
+			for(k = 0; k < MAPSIZE;) {
 				int k2;
-				for(k2 = 0; k2 < mapSize; k2++) {
-
+				for(k2 = 0; k2 < MAPSIZE; k2++) {
+					
 					// Print sharks
 					if ( sharks[k][k2] != -1) {
 					printf("%c", '*');
@@ -99,34 +82,36 @@ main()
 					else if ( fish[k][k2] != -1) {
 						printf("%c", '.');
 					}
-					//Output space
+					//Output space if no creature at position
 					else
 					{
 						printf("%c", ' ');
 					}
 			
 				}	
-				//Go to next line
-				if ( k2 == mapSize ) {
+				//Go to next line (row in arrays)
+				if ( k2 == MAPSIZE ) {
 					printf("\n");
 					k++;
 					k2 = 0;
 				}
 			}
+			//Increment counter and reset time counter
+			timesSimulated++;
 			lastTime = thisTime;
 		}
 	}
 
 }
 //Create sharks using passed in arrays
-void createSharks(int pNum, int pSize, int pSharkArray[][MAPSIZE], int pStarveArray[][MAPSIZE], int pSharkMoveArray[][MAPSIZE]) {
+void createSharks(int pNum, int pSize, int pSharkArray[][MAPSIZE], int pStarveArray[][MAPSIZE], short pSharkMoveArray[][MAPSIZE]) {
 	
 	int j;
 	for(j = 0; j < pNum;) {
 		int r = rand() % pSize;
 		int r2 = rand() % pSize;
 
-		if (pSharkArray[r][r2] == -1) //If this position 
+		if (pSharkArray[r][r2] == -1) //If this position does not already contain a shark
 	    {
 		  	pSharkArray[r][r2] = 0; 
 			pStarveArray[r][r2] = 0;
@@ -135,14 +120,14 @@ void createSharks(int pNum, int pSize, int pSharkArray[][MAPSIZE], int pStarveAr
 		}
 	}
 }
-void createFish(int pNum, int pSize, int pFishArray[][MAPSIZE], int pFishMoveArray[][MAPSIZE], int pSharkArray[][MAPSIZE]) {
+void createFish(int pNum, int pSize, int pFishArray[][MAPSIZE], short pFishMoveArray[][MAPSIZE], int pSharkArray[][MAPSIZE]) {
 	
 	int j;
 	for(j = 0; j < pNum;) {
 		int r = rand() % pSize;
 		int r2 = rand() % pSize;
 
-		if (pFishArray[r][r2] == -1 && pSharkArray[r][r2] == -1)
+		if (pFishArray[r][r2] == -1 && pSharkArray[r][r2] == -1) //If this position does not already contain a fish or a shark
 	    {
 		  	pFishArray[r][r2] = 0; 
 			pFishMoveArray[r][r2] = 0;
