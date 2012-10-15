@@ -2,7 +2,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-typedef short bool
+typedef short bool;
 #define true 1
 #define false 0
 
