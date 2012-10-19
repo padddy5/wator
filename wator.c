@@ -12,6 +12,7 @@ void createSharks(int pNum, int pSharkArray[][MAPSIZE], int pStarveArray[][MAPSI
 void createFish(int pNum, int pFishArray[][MAPSIZE], short pFishMoveArray[][MAPSIZE], int pSharkArray[][MAPSIZE]);
 void updateFish(int pFishArray[][MAPSIZE], int pSharkArray[][MAPSIZE], short pFishMoveArray[][MAPSIZE]);
 void updateShark(int pSharkArray[][MAPSIZE], int pFishArray[][MAPSIZE], int pStarveArray[][MAPSIZE], short pSharkMoveArray[][MAPSIZE]);
+void checkFishArraysAndMove(int pFishArray[][MAPSIZE], int pSharkArray[][MAPSIZE],short pFishMoveArray[][MAPSIZE],int xPos, int yPos, int xOffset, int yOffset);
 void print(int pSharkArray[][MAPSIZE], int pFishArray[][MAPSIZE]);
 
 main()
@@ -57,6 +58,8 @@ main()
 		}
 		if (thisTime - lastTime > updateTime) //If time since last simulation is greater than UPDATETIME, do the simulation
 		{
+		    //updateShark(sharks, fish,starve,sharkmove);
+		    updateFish(fish,sharks,fishmove);
 			//Prints creatures to console
 			print(sharks, fish);
 			
@@ -164,3 +167,76 @@ void print(int pSharkArray[][MAPSIZE], int pFishArray[][MAPSIZE]) {
 	}
 }
 
+void updateFish(int pFishArray[][MAPSIZE], int pSharkArray[][MAPSIZE], short pFishMoveArray[][MAPSIZE]) {
+	int i;
+	for(i = 0; i < MAPSIZE; i++) {
+		int i2;
+		for(i2 = 0; i2 < MAPSIZE; i2++) {
+			pFishMoveArray[i][i2] = 0;
+			if (pFishArray[i][i2] > -1)
+			{ 
+				//If there is a fish at this position, move
+				int r = rand() % 4;
+				if (r == 0)
+				{
+					if (i+1 < MAPSIZE)
+					{
+						checkFishArraysAndMove(pFishArray,pSharkArray, pFishMoveArray, i,i2,i+1,i2);
+					}
+					else
+					{
+						checkFishArraysAndMove(pFishArray,pSharkArray, pFishMoveArray,i,i2,0,i2);
+					}
+				}
+				else if (r == 1)
+				{
+					if (i-1 >= 0)
+					{
+						checkFishArraysAndMove(pFishArray,pSharkArray, pFishMoveArray,i,i2,i-1,i2);
+					}
+					else
+					{
+						checkFishArraysAndMove(pFishArray,pSharkArray, pFishMoveArray,i,i2,MAPSIZE-1,i2);
+					}
+				}
+				else if (r == 2)
+				{
+					if (i2+1 < MAPSIZE)
+					{
+						checkFishArraysAndMove(pFishArray,pSharkArray, pFishMoveArray,i,i2,i,i2+1);
+					}
+					else
+					{
+						checkFishArraysAndMove(pFishArray,pSharkArray, pFishMoveArray,i,i2,i,0);
+					}	
+				}
+				else
+				{
+					if (i2 - 1 >= 0)
+					{
+						checkFishArraysAndMove(pFishArray,pSharkArray, pFishMoveArray,i,i2,i,i2-1);
+					}
+					else
+					{
+						checkFishArraysAndMove(pFishArray,pSharkArray, pFishMoveArray,i,i2,i,MAPSIZE-1);
+					}
+				}
+			}
+			
+		}
+	}
+}
+
+void updateShark(int pSharkArray[][MAPSIZE], int pFishArray[][MAPSIZE], int pStarveArray[][MAPSIZE], short pSharkMoveArray[][MAPSIZE]) {
+	
+}
+void checkFishArraysAndMove(int pFishArray[][MAPSIZE], int pSharkArray[][MAPSIZE], short pFishMoveArray[][MAPSIZE], int xPos, int yPos, int xOffset, int yOffset) {
+	
+	if (pFishArray[xOffset][yOffset] == -1 && pFishMoveArray[xOffset][yOffset] == 0 && pSharkArray[xOffset][yOffset] == -1)
+	{
+		pFishArray[xOffset][yOffset] = pFishArray[xPos][yPos];
+		pFishArray[xPos][yPos]= -1;
+		pFishMoveArray[xOffset][yOffset] = 1;
+		pFishArray[xOffset][yOffset]++;
+	}
+}
