@@ -7,7 +7,7 @@ typedef short bool;
 #define false 0
 
 #define MAPSIZE 20
-
+#define fBreed 5
 void createSharks(int pNum, int pSharkArray[][MAPSIZE], int pStarveArray[][MAPSIZE], short pSharkMoveArray[][MAPSIZE]);
 void createFish(int pNum, int pFishArray[][MAPSIZE], short pFishMoveArray[][MAPSIZE], int pSharkArray[][MAPSIZE]);
 void updateFish(int pFishArray[][MAPSIZE], int pSharkArray[][MAPSIZE], short pFishMoveArray[][MAPSIZE]);
@@ -128,7 +128,7 @@ void createFish(int pNum, int pFishArray[][MAPSIZE], short pFishMoveArray[][MAPS
 
 		if (pFishArray[r][r2] == -1 && pSharkArray[r][r2] == -1) //If this position does not already contain a fish or a shark
 	    {
-		  	pFishArray[r][r2] = 0; 
+		  	pFishArray[r][r2] = rand()%fBreed+1; 
 			pFishMoveArray[r][r2] = 0;
 		  	j++;
 		}
@@ -238,5 +238,10 @@ void checkFishArraysAndMove(int pFishArray[][MAPSIZE], int pSharkArray[][MAPSIZE
 		pFishArray[xPos][yPos]= -1;
 		pFishMoveArray[xOffset][yOffset] = 1;
 		pFishArray[xOffset][yOffset]++;
+		if (pFishArray[xOffset][yOffset] > fBreed)
+		{
+			pFishArray[xOffset][yOffset] = 0;
+			pFishArray[xPos][yPos] = 0;
+		}
 	}
 }
