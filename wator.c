@@ -1,3 +1,8 @@
+/** 
+ *  @file	wator.c
+ *  @brief	Wator simulation
+ */
+
 #include<stdio.h>
 #include <time.h>
 #include <stdlib.h>
@@ -10,6 +15,8 @@ typedef short bool;
 #define fBreed 5
 #define sBreed 10
 #define starveNum 5
+
+// Function definitions
 void createSharks(int pNum, int pSharkArray[][MAPSIZE], int pStarveArray[][MAPSIZE], short pSharkMoveArray[][MAPSIZE]);
 void createFish(int pNum, int pFishArray[][MAPSIZE], short pFishMoveArray[][MAPSIZE], int pSharkArray[][MAPSIZE]);
 void updateFish(int pFishArray[][MAPSIZE], int pSharkArray[][MAPSIZE], short pFishMoveArray[][MAPSIZE]);
@@ -18,9 +25,18 @@ void checkFishArraysAndMove(int pFishArray[][MAPSIZE], int pSharkArray[][MAPSIZE
 void checkSharkArraysAndMove(int pSharkArray[][MAPSIZE],int pFishArray[][MAPSIZE],short pSharkMoveArray[][MAPSIZE], int pStarveArray[][MAPSIZE],int xPos, int yPos, int xOffset, int yOffset);
 int checkFish(int pFishArray[][MAPSIZE],int x, int y);
 void print(int pSharkArray[][MAPSIZE], int pFishArray[][MAPSIZE]);
+
 int fishcounter;
 int sharkcounter;
-main()
+
+/** @brief Initialisation and game loop.
+ *
+ * Initialises fish and sharks, then enters the game loop.
+ * 
+ * @param nothing
+ * @return nothing
+ */
+int main()
 {
 	srand(time(NULL));
 	int sharkNum = 10;
@@ -64,6 +80,7 @@ main()
 		}
 		if (thisTime - lastTime > updateTime) //If time since last simulation is greater than UPDATETIME, do the simulation
 		{
+			//Update creatures
 		    updateShark(sharks, fish,starve,sharkmove);
 		    updateFish(fish,sharks,fishmove);
 			//Prints creatures to console
@@ -74,13 +91,23 @@ main()
 			lastTime = thisTime;
 		}
 	}
-
+	
+	return 0;
 }
 
-//Initialises shark properties and creates sharks
+/** @brief Shark Initialisation.
+ *
+ * Initialises shark properties and creates sharks.
+ * 
+ * @param pNum Number of sharks to create.
+ * @param pSharkArray The container for the sharks.
+ * @param pStarveArray Array containing starve values for the sharks.
+ * @param pSharkMoveArray Used to store whether or not a shark has moved.
+ * @return nothing
+ */
 void createSharks(int pNum, int pSharkArray[][MAPSIZE], int pStarveArray[][MAPSIZE], short pSharkMoveArray[][MAPSIZE]) {
 	
-
+	// initialise shark properties
 	int i;
 	for(i = 0; i < MAPSIZE; i++) {
 		int i2;
@@ -95,6 +122,7 @@ void createSharks(int pNum, int pSharkArray[][MAPSIZE], int pStarveArray[][MAPSI
 		}
 	}
 
+	// Create sharks
 	int j;
 	for(j = 0; j < pNum;) {
 		int r = rand() % MAPSIZE;
@@ -108,9 +136,19 @@ void createSharks(int pNum, int pSharkArray[][MAPSIZE], int pStarveArray[][MAPSI
 	}
 }
 
-//Creates fish
+/** @brief Fish Initialisation.
+ *
+ * Initialises fish properties and creates fish.
+ * 
+ * @param pNum Number of fish to create.
+ * @param pFishArray The container for the fish.
+ * @param pFishMoveArray Used to store whether or not a fish has moved.
+ * @param pSharkArray Used to avoid placing a fish on top of a shark.
+ * @return nothing
+ */
 void createFish(int pNum, int pFishArray[][MAPSIZE], short pFishMoveArray[][MAPSIZE], int pSharkArray[][MAPSIZE]) {
 	
+	// initialise fish properties
 	int i;
 	for(i = 0; i < MAPSIZE; i++) {
 		int i2;
@@ -125,6 +163,7 @@ void createFish(int pNum, int pFishArray[][MAPSIZE], short pFishMoveArray[][MAPS
 		}
 	}
 
+	// Create fish
 	int j;
 	for(j = 0; j < pNum;) {
 		int r = rand() % MAPSIZE;
@@ -139,7 +178,14 @@ void createFish(int pNum, int pFishArray[][MAPSIZE], short pFishMoveArray[][MAPS
 	}
 }
 
-//Prints the positions of creatures to the console
+/** @brief Print function.
+ *
+ * Prints the sharks and fish to the console
+ *
+ * @param pFishArray The container for the fish.
+ * @param pSharkArray The container for the sharks.
+ * @return nothing
+ */
 void print(int pSharkArray[][MAPSIZE], int pFishArray[][MAPSIZE]) {
 
 	int k;
@@ -172,6 +218,15 @@ void print(int pSharkArray[][MAPSIZE], int pFishArray[][MAPSIZE]) {
 	printf("\n");
 	printf("%d",fishcounter);
 }
+
+/** @brief Print function.
+ *
+ * Prints the sharks and fish to the console
+ *
+ * @param pFishArray The container for the fish.
+ * @param pSharkArray The container for the sharks.
+ * @return nothing
+ */
 int checkFish(int pFishArray[][MAPSIZE],int x, int y)
 {
 	if (x >= MAPSIZE)
@@ -199,6 +254,16 @@ int checkFish(int pFishArray[][MAPSIZE],int x, int y)
 		return 0;
 	}
 }
+
+/** @brief Fish update
+ *
+ * Updates the fishes positions and properties
+ *
+ * @param pFishArray The container for the fish.
+ * @param pSharkArray The container for the sharks.
+ * @param pFishMoveArray Used to determine if a fish has been moved to avoid moving it twice in one update.
+ * @return nothing
+ */
 void updateFish(int pFishArray[][MAPSIZE], int pSharkArray[][MAPSIZE], short pFishMoveArray[][MAPSIZE]) {
 	int i;
 	for(i = 0; i < MAPSIZE; i++) {
@@ -259,6 +324,16 @@ void updateFish(int pFishArray[][MAPSIZE], int pSharkArray[][MAPSIZE], short pFi
 	}
 }
 
+/** @brief Shark update
+ *
+ * Updates the sharks positions and properties
+ *
+ * @param pSharkArray The container for the sharks.
+ * @param pFishArray The container for the fish.
+ * @param pStarveArray Used to determine if a shark has starved to death.
+ * @param pSharkMoveArray Used to determine if a fish has been moved to avoid moving it twice in one update.
+ * @return nothing
+ */
 void updateShark(int pSharkArray[][MAPSIZE], int pFishArray[][MAPSIZE], int pStarveArray[][MAPSIZE], short pSharkMoveArray[][MAPSIZE]) {
 	int i;
 	for(i = 0; i < MAPSIZE; i++) {
@@ -412,6 +487,20 @@ void updateShark(int pSharkArray[][MAPSIZE], int pFishArray[][MAPSIZE], int pSta
 		}
 	}
 }
+
+/** @brief Fish movement
+ *
+ * Checks if a grid square is empty and moves the fish into it if it is.
+ *
+ * @param pFishArray The container for the fish.
+ * @param pSharkArray The container for the sharks.
+ * @param pFishMoveArray Used to mark a fish that has moved.
+ * @param xPos The x coordinate of the fish
+ * @param yPos The y coordinate of the fish
+ * @param xOffset The x coordinate of the grid square being checked.
+ * @param yOffset The y coordinate of the grid square being checked.
+ * @return nothing
+ */
 void checkFishArraysAndMove(int pFishArray[][MAPSIZE], int pSharkArray[][MAPSIZE], short pFishMoveArray[][MAPSIZE], int xPos, int yPos, int xOffset, int yOffset) {
 	
 	if (pFishArray[xOffset][yOffset] == -1 && pFishMoveArray[xOffset][yOffset] == 0 && pSharkArray[xOffset][yOffset] == -1)
@@ -428,7 +517,23 @@ void checkFishArraysAndMove(int pFishArray[][MAPSIZE], int pSharkArray[][MAPSIZE
 		}
 	}
 }
+
+/** @brief Shark movement
+ *
+ * Moves a shark into the grid square being checked if it is not occupied by another shark
+ *
+ * @param pSharkArray The container for the sharks.
+ * @param pFishArray The container for the fish.
+ * @param pSharkMoveArray Used to mark a shark that has moved.
+ * @param pStarveArray Used to check if a shark has starved to death.
+ * @param xPos The x coordinate of the shark
+ * @param yPos The y coordinate of the shark
+ * @param xOffset The x coordinate of the grid square being checked.
+ * @param yOffset The y coordinate of the grid square being checked.
+ * @return nothing
+ */
 void checkSharkArraysAndMove(int pSharkArray[][MAPSIZE], int pFishArray[][MAPSIZE], short pSharkMoveArray[][MAPSIZE], int pStarveArray[][MAPSIZE],int xPos, int yPos, int xOffset, int yOffset) {
+	
 	if (xOffset < 0)
 	{
 		xOffset = MAPSIZE;
