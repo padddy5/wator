@@ -1,0 +1,342 @@
+\hypertarget{wator_8c}{\section{wator.\-c \-File \-Reference}
+\label{wator_8c}\index{wator.\-c@{wator.\-c}}
+}
+
+
+\-Wator simulation.  
+
+
+{\ttfamily \#include $<$stdio.\-h$>$}\*
+{\ttfamily \#include $<$time.\-h$>$}\*
+{\ttfamily \#include $<$stdlib.\-h$>$}\*
+\subsection*{\-Defines}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{wator_8c_a41f9c5fb8b08eb5dc3edce4dcb37fee7}{\#define {\bfseries true}~1}\label{wator_8c_a41f9c5fb8b08eb5dc3edce4dcb37fee7}
+
+\item 
+\hypertarget{wator_8c_a65e9886d74aaee76545e83dd09011727}{\#define {\bfseries false}~0}\label{wator_8c_a65e9886d74aaee76545e83dd09011727}
+
+\item 
+\hypertarget{wator_8c_a074ac139464c471d08aa2ad62884fc43}{\#define {\bfseries \-M\-A\-P\-S\-I\-Z\-E}~20}\label{wator_8c_a074ac139464c471d08aa2ad62884fc43}
+
+\item 
+\hypertarget{wator_8c_a99004a6b583c350aa930001a92e716af}{\#define {\bfseries f\-Breed}~5}\label{wator_8c_a99004a6b583c350aa930001a92e716af}
+
+\item 
+\hypertarget{wator_8c_a112dcbb32c2638b60953cf1d216ff37c}{\#define {\bfseries s\-Breed}~15}\label{wator_8c_a112dcbb32c2638b60953cf1d216ff37c}
+
+\item 
+\hypertarget{wator_8c_a62866664aaf9c9c51dcc4030964705d8}{\#define {\bfseries starve\-Num}~9}\label{wator_8c_a62866664aaf9c9c51dcc4030964705d8}
+
+\end{DoxyCompactItemize}
+\subsection*{\-Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{wator_8c_ab37db9e79c65c83120d0dd816e86424a}{typedef short {\bfseries bool}}\label{wator_8c_ab37db9e79c65c83120d0dd816e86424a}
+
+\end{DoxyCompactItemize}
+\subsection*{\-Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{wator_8c_a6202b7a1d1f0fe1db8bacb3d10c6f884}{create\-Sharks} (int p\-Num, int p\-Shark\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, int p\-Starve\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, short p\-Shark\-Move\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]})
+\begin{DoxyCompactList}\small\item\em \-Shark \-Initialisation. \end{DoxyCompactList}\item 
+void \hyperlink{wator_8c_a43f90b0da7101dd8207c2160fb23c0ab}{create\-Fish} (int p\-Num, int p\-Fish\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, short p\-Fish\-Move\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, int p\-Shark\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]})
+\begin{DoxyCompactList}\small\item\em \-Fish \-Initialisation. \end{DoxyCompactList}\item 
+void \hyperlink{wator_8c_a23422a15852033d3ee5dca2574a8c1a9}{update\-Fish} (int p\-Fish\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, int p\-Shark\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, short p\-Fish\-Move\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]})
+\begin{DoxyCompactList}\small\item\em \-Fish update. \end{DoxyCompactList}\item 
+void \hyperlink{wator_8c_aaef2a407d073a93dc9ab5f9f99bbf160}{update\-Shark} (int p\-Shark\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, int p\-Fish\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, int p\-Starve\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, short p\-Shark\-Move\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]})
+\begin{DoxyCompactList}\small\item\em \-Shark update. \end{DoxyCompactList}\item 
+void \hyperlink{wator_8c_aed42b3ce6eaffdfa051b26ba996bfc6a}{check\-Fish\-Arrays\-And\-Move} (int p\-Fish\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, int p\-Shark\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, short p\-Fish\-Move\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, int x\-Pos, int y\-Pos, int x\-Offset, int y\-Offset)
+\begin{DoxyCompactList}\small\item\em \-Fish movement. \end{DoxyCompactList}\item 
+void \hyperlink{wator_8c_af60ce8787a926a56b0b9b8fe40dc909e}{check\-Shark\-Arrays\-And\-Move} (int p\-Shark\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, int p\-Fish\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, short p\-Shark\-Move\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, int p\-Starve\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, int x\-Pos, int y\-Pos, int x\-Offset, int y\-Offset)
+\begin{DoxyCompactList}\small\item\em \-Shark movement. \end{DoxyCompactList}\item 
+int \hyperlink{wator_8c_ad2562c2f8b9ab143aec6fff174482939}{check\-Fish} (int p\-Fish\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, int x, int y)
+\begin{DoxyCompactList}\small\item\em \-Print function. \end{DoxyCompactList}\item 
+void \hyperlink{wator_8c_a0a50c49baa3f7566c500bb4d35825db0}{print} (int p\-Shark\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, int p\-Fish\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]})
+\begin{DoxyCompactList}\small\item\em \-Print function. \end{DoxyCompactList}\item 
+int \hyperlink{wator_8c_ae66f6b31b5ad750f1fe042a706a4e3d4}{main} ()
+\begin{DoxyCompactList}\small\item\em \-Initialisation and game loop. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{\-Variables}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{wator_8c_a144255b7bffc43cdac1369c899933f33}{int {\bfseries fishcounter}}\label{wator_8c_a144255b7bffc43cdac1369c899933f33}
+
+\item 
+\hypertarget{wator_8c_acf50e1c79c93691ffb8af156a11c296c}{int {\bfseries sharkcounter}}\label{wator_8c_acf50e1c79c93691ffb8af156a11c296c}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{\-Detailed \-Description}
+\-Wator simulation. 
+
+\subsection{\-Function \-Documentation}
+\hypertarget{wator_8c_ad2562c2f8b9ab143aec6fff174482939}{\index{wator.\-c@{wator.\-c}!check\-Fish@{check\-Fish}}
+\index{check\-Fish@{check\-Fish}!wator.c@{wator.\-c}}
+\subsubsection[{check\-Fish}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf check\-Fish} (
+\begin{DoxyParamCaption}
+\item[{int}]{p\-Fish\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, }
+\item[{int}]{x, }
+\item[{int}]{y}
+\end{DoxyParamCaption}
+)}}\label{wator_8c_ad2562c2f8b9ab143aec6fff174482939}
+
+
+\-Print function. 
+
+\-Prints the sharks and fish to the console
+
+
+\begin{DoxyParams}{\-Parameters}
+{\em p\-Fish\-Array} & \-The container for the fish. \\
+\hline
+{\em p\-Shark\-Array} & \-The container for the sharks. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{\-Returns}
+nothing 
+\end{DoxyReturn}
+\hypertarget{wator_8c_aed42b3ce6eaffdfa051b26ba996bfc6a}{\index{wator.\-c@{wator.\-c}!check\-Fish\-Arrays\-And\-Move@{check\-Fish\-Arrays\-And\-Move}}
+\index{check\-Fish\-Arrays\-And\-Move@{check\-Fish\-Arrays\-And\-Move}!wator.c@{wator.\-c}}
+\subsubsection[{check\-Fish\-Arrays\-And\-Move}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf check\-Fish\-Arrays\-And\-Move} (
+\begin{DoxyParamCaption}
+\item[{int}]{p\-Fish\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, }
+\item[{int}]{p\-Shark\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, }
+\item[{short}]{p\-Fish\-Move\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, }
+\item[{int}]{x\-Pos, }
+\item[{int}]{y\-Pos, }
+\item[{int}]{x\-Offset, }
+\item[{int}]{y\-Offset}
+\end{DoxyParamCaption}
+)}}\label{wator_8c_aed42b3ce6eaffdfa051b26ba996bfc6a}
+
+
+\-Fish movement. 
+
+\-Checks if a grid square is empty and moves the fish into it if it is.
+
+
+\begin{DoxyParams}{\-Parameters}
+{\em p\-Fish\-Array} & \-The container for the fish. \\
+\hline
+{\em p\-Shark\-Array} & \-The container for the sharks. \\
+\hline
+{\em p\-Fish\-Move\-Array} & \-Used to mark a fish that has moved. \\
+\hline
+{\em x\-Pos} & \-The x coordinate of the fish \\
+\hline
+{\em y\-Pos} & \-The y coordinate of the fish \\
+\hline
+{\em x\-Offset} & \-The x coordinate of the grid square being checked. \\
+\hline
+{\em y\-Offset} & \-The y coordinate of the grid square being checked. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{\-Returns}
+nothing 
+\end{DoxyReturn}
+\hypertarget{wator_8c_af60ce8787a926a56b0b9b8fe40dc909e}{\index{wator.\-c@{wator.\-c}!check\-Shark\-Arrays\-And\-Move@{check\-Shark\-Arrays\-And\-Move}}
+\index{check\-Shark\-Arrays\-And\-Move@{check\-Shark\-Arrays\-And\-Move}!wator.c@{wator.\-c}}
+\subsubsection[{check\-Shark\-Arrays\-And\-Move}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf check\-Shark\-Arrays\-And\-Move} (
+\begin{DoxyParamCaption}
+\item[{int}]{p\-Shark\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, }
+\item[{int}]{p\-Fish\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, }
+\item[{short}]{p\-Shark\-Move\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, }
+\item[{int}]{p\-Starve\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, }
+\item[{int}]{x\-Pos, }
+\item[{int}]{y\-Pos, }
+\item[{int}]{x\-Offset, }
+\item[{int}]{y\-Offset}
+\end{DoxyParamCaption}
+)}}\label{wator_8c_af60ce8787a926a56b0b9b8fe40dc909e}
+
+
+\-Shark movement. 
+
+\-Moves a shark into the grid square being checked if it is not occupied by another shark
+
+
+\begin{DoxyParams}{\-Parameters}
+{\em p\-Shark\-Array} & \-The container for the sharks. \\
+\hline
+{\em p\-Fish\-Array} & \-The container for the fish. \\
+\hline
+{\em p\-Shark\-Move\-Array} & \-Used to mark a shark that has moved. \\
+\hline
+{\em p\-Starve\-Array} & \-Used to check if a shark has starved to death. \\
+\hline
+{\em x\-Pos} & \-The x coordinate of the shark \\
+\hline
+{\em y\-Pos} & \-The y coordinate of the shark \\
+\hline
+{\em x\-Offset} & \-The x coordinate of the grid square being checked. \\
+\hline
+{\em y\-Offset} & \-The y coordinate of the grid square being checked. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{\-Returns}
+nothing 
+\end{DoxyReturn}
+\hypertarget{wator_8c_a43f90b0da7101dd8207c2160fb23c0ab}{\index{wator.\-c@{wator.\-c}!create\-Fish@{create\-Fish}}
+\index{create\-Fish@{create\-Fish}!wator.c@{wator.\-c}}
+\subsubsection[{create\-Fish}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf create\-Fish} (
+\begin{DoxyParamCaption}
+\item[{int}]{p\-Num, }
+\item[{int}]{p\-Fish\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, }
+\item[{short}]{p\-Fish\-Move\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, }
+\item[{int}]{p\-Shark\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{wator_8c_a43f90b0da7101dd8207c2160fb23c0ab}
+
+
+\-Fish \-Initialisation. 
+
+\-Initialises fish properties and creates fish.
+
+
+\begin{DoxyParams}{\-Parameters}
+{\em p\-Num} & \-Number of fish to create. \\
+\hline
+{\em p\-Fish\-Array} & \-The container for the fish. \\
+\hline
+{\em p\-Fish\-Move\-Array} & \-Used to store whether or not a fish has moved. \\
+\hline
+{\em p\-Shark\-Array} & \-Used to avoid placing a fish on top of a shark. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{\-Returns}
+nothing 
+\end{DoxyReturn}
+\hypertarget{wator_8c_a6202b7a1d1f0fe1db8bacb3d10c6f884}{\index{wator.\-c@{wator.\-c}!create\-Sharks@{create\-Sharks}}
+\index{create\-Sharks@{create\-Sharks}!wator.c@{wator.\-c}}
+\subsubsection[{create\-Sharks}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf create\-Sharks} (
+\begin{DoxyParamCaption}
+\item[{int}]{p\-Num, }
+\item[{int}]{p\-Shark\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, }
+\item[{int}]{p\-Starve\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, }
+\item[{short}]{p\-Shark\-Move\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{wator_8c_a6202b7a1d1f0fe1db8bacb3d10c6f884}
+
+
+\-Shark \-Initialisation. 
+
+\-Initialises shark properties and creates sharks.
+
+
+\begin{DoxyParams}{\-Parameters}
+{\em p\-Num} & \-Number of sharks to create. \\
+\hline
+{\em p\-Shark\-Array} & \-The container for the sharks. \\
+\hline
+{\em p\-Starve\-Array} & \-Array containing starve values for the sharks. \\
+\hline
+{\em p\-Shark\-Move\-Array} & \-Used to store whether or not a shark has moved. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{\-Returns}
+nothing 
+\end{DoxyReturn}
+\hypertarget{wator_8c_ae66f6b31b5ad750f1fe042a706a4e3d4}{\index{wator.\-c@{wator.\-c}!main@{main}}
+\index{main@{main}!wator.c@{wator.\-c}}
+\subsubsection[{main}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf main} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{wator_8c_ae66f6b31b5ad750f1fe042a706a4e3d4}
+
+
+\-Initialisation and game loop. 
+
+\-Initialises fish and sharks, then enters the game loop.
+
+
+\begin{DoxyParams}{\-Parameters}
+{\em nothing} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{\-Returns}
+nothing 
+\end{DoxyReturn}
+\hypertarget{wator_8c_a0a50c49baa3f7566c500bb4d35825db0}{\index{wator.\-c@{wator.\-c}!print@{print}}
+\index{print@{print}!wator.c@{wator.\-c}}
+\subsubsection[{print}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf print} (
+\begin{DoxyParamCaption}
+\item[{int}]{p\-Shark\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, }
+\item[{int}]{p\-Fish\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{wator_8c_a0a50c49baa3f7566c500bb4d35825db0}
+
+
+\-Print function. 
+
+\-Prints the sharks and fish to the console
+
+
+\begin{DoxyParams}{\-Parameters}
+{\em p\-Fish\-Array} & \-The container for the fish. \\
+\hline
+{\em p\-Shark\-Array} & \-The container for the sharks. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{\-Returns}
+nothing 
+\end{DoxyReturn}
+\hypertarget{wator_8c_a23422a15852033d3ee5dca2574a8c1a9}{\index{wator.\-c@{wator.\-c}!update\-Fish@{update\-Fish}}
+\index{update\-Fish@{update\-Fish}!wator.c@{wator.\-c}}
+\subsubsection[{update\-Fish}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf update\-Fish} (
+\begin{DoxyParamCaption}
+\item[{int}]{p\-Fish\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, }
+\item[{int}]{p\-Shark\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, }
+\item[{short}]{p\-Fish\-Move\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{wator_8c_a23422a15852033d3ee5dca2574a8c1a9}
+
+
+\-Fish update. 
+
+\-Updates the fishes positions and properties
+
+
+\begin{DoxyParams}{\-Parameters}
+{\em p\-Fish\-Array} & \-The container for the fish. \\
+\hline
+{\em p\-Shark\-Array} & \-The container for the sharks. \\
+\hline
+{\em p\-Fish\-Move\-Array} & \-Used to determine if a fish has been moved to avoid moving it twice in one update. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{\-Returns}
+nothing 
+\end{DoxyReturn}
+\hypertarget{wator_8c_aaef2a407d073a93dc9ab5f9f99bbf160}{\index{wator.\-c@{wator.\-c}!update\-Shark@{update\-Shark}}
+\index{update\-Shark@{update\-Shark}!wator.c@{wator.\-c}}
+\subsubsection[{update\-Shark}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf update\-Shark} (
+\begin{DoxyParamCaption}
+\item[{int}]{p\-Shark\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, }
+\item[{int}]{p\-Fish\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, }
+\item[{int}]{p\-Starve\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}, }
+\item[{short}]{p\-Shark\-Move\-Array\mbox{[}$\,$\mbox{]}\mbox{[}\-M\-A\-P\-S\-I\-Z\-E\mbox{]}}
+\end{DoxyParamCaption}
+)}}\label{wator_8c_aaef2a407d073a93dc9ab5f9f99bbf160}
+
+
+\-Shark update. 
+
+\-Updates the sharks positions and properties
+
+
+\begin{DoxyParams}{\-Parameters}
+{\em p\-Shark\-Array} & \-The container for the sharks. \\
+\hline
+{\em p\-Fish\-Array} & \-The container for the fish. \\
+\hline
+{\em p\-Starve\-Array} & \-Used to determine if a shark has starved to death. \\
+\hline
+{\em p\-Shark\-Move\-Array} & \-Used to determine if a fish has been moved to avoid moving it twice in one update. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{\-Returns}
+nothing 
+\end{DoxyReturn}

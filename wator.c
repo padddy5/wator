@@ -13,8 +13,8 @@ typedef short bool;
 
 #define MAPSIZE 20
 #define fBreed 5
-#define sBreed 10
-#define starveNum 5
+#define sBreed 15
+#define starveNum 9 
 
 // Function definitions
 void createSharks(int pNum, int pSharkArray[][MAPSIZE], int pStarveArray[][MAPSIZE], short pSharkMoveArray[][MAPSIZE]);
@@ -40,7 +40,7 @@ int main()
 {
 	srand(time(NULL));
 	int sharkNum = 10;
-	int fishNum = 50;		
+	int fishNum = 30;		
 	sharkcounter = sharkNum;
 	fishcounter = fishNum;
 	//Array of ints to represent shark and fish ages. If -1, no fish or shark at this point.
@@ -50,7 +50,7 @@ int main()
 	short fishmove[MAPSIZE][MAPSIZE];
 	short sharkmove[MAPSIZE][MAPSIZE];
 	int starve[MAPSIZE][MAPSIZE];
-
+	int framesPerSecond;
 	//Create fish and sharks
 	createSharks(sharkNum, sharks, starve, sharkmove);
 	createFish(fishNum, fish, fishmove,sharks);
@@ -62,33 +62,38 @@ int main()
 	//The last time at which the simulation was run and drawn to screen
 	time_t lastTime;
 	lastTime = time (NULL);
-	short updateNum = 20;
-	short updateTime = 1;
-
+	short updateNum = 20000;
+	float updateTime = 0.1;
+	int updateCounter = 0;
 	//Game loop (update method)
+	//The current time
+	time_t thisTime;
+	thisTime = time (NULL);
+	int fps = 0;
 	while (quit == false)
 	{
-		//The current time
-		time_t thisTime;
-  		thisTime = time (NULL);
-		
-
-		if (timesSimulated == updateNum)
+		thisTime = time (NULL);
+		if (timesSimulated >= updateNum)
 		{
 			//Exit from loop if simulation run RUNNUMBER times
 			quit = true;
+			printf("%d",fps);
 		}
-		if (thisTime - lastTime > updateTime) //If time since last simulation is greater than UPDATETIME, do the simulation
-		{
-			//Update creatures
-		    updateShark(sharks, fish,starve,sharkmove);
-		    updateFish(fish,sharks,fishmove);
-			//Prints creatures to console
-			print(sharks, fish);
-			
-			//Increment counter and reset time counter
-			timesSimulated++;
+		//Update creatures
+   		updateFish(fish,sharks,fishmove);
+		updateShark(sharks, fish,starve,sharkmove);
+		 
+		//Prints creatures to console
+		print(sharks, fish);
+		//Increment counter and reset time counter
+		timesSimulated++;
+		updateCounter++;
+		if (thisTime - lastTime > 1) //If time since last simulation is greater than UPDATETIME, do the simulation
+		{	
+			fps = (1000/updateCounter);
 			lastTime = thisTime;
+			updateCounter = 0;
+			printf("%d",fps);
 		}
 	}
 	
@@ -214,9 +219,9 @@ void print(int pSharkArray[][MAPSIZE], int pFishArray[][MAPSIZE]) {
 			k2 = 0;
 		}
 	}
-	printf("%d",sharkcounter);
-	printf("\n");
-	printf("%d",fishcounter);
+	//printf("%d",sharkcounter);
+	//printf("\n");
+	//printf("%d",fishcounter);
 }
 
 /** @brief Print function.
@@ -235,7 +240,7 @@ int checkFish(int pFishArray[][MAPSIZE],int x, int y)
 	}
 	else if (x < 0)
 	{
-		x = MAPSIZE;
+		x = MAPSIZE-1;
 	}
 	if (y >= MAPSIZE)
 	{
@@ -243,7 +248,7 @@ int checkFish(int pFishArray[][MAPSIZE],int x, int y)
 	}
 	else if (y<0)
 	{
-		y = MAPSIZE;
+		y = MAPSIZE-1;
 	}
 	if (pFishArray[x][y] > -1)
 	{
@@ -265,11 +270,19 @@ int checkFish(int pFishArray[][MAPSIZE],int x, int y)
  * @return nothing
  */
 void updateFish(int pFishArray[][MAPSIZE], int pSharkArray[][MAPSIZE], short pFishMoveArray[][MAPSIZE]) {
+	int g;
+	int h;
+	for (g = 0; g < MAPSIZE; g++)
+	{
+		for (h=0; h < MAPSIZE; h++)
+		{
+			pFishMoveArray[g][h] = 0;
+		}
+	}
 	int i;
 	for(i = 0; i < MAPSIZE; i++) {
 		int i2;
 		for(i2 = 0; i2 < MAPSIZE; i2++) {
-			pFishMoveArray[i][i2] = 0;
 			if (pFishArray[i][i2] > -1)
 			{ 
 				//If there is a fish at this position, move
@@ -335,154 +348,89 @@ void updateFish(int pFishArray[][MAPSIZE], int pSharkArray[][MAPSIZE], short pFi
  * @return nothing
  */
 void updateShark(int pSharkArray[][MAPSIZE], int pFishArray[][MAPSIZE], int pStarveArray[][MAPSIZE], short pSharkMoveArray[][MAPSIZE]) {
+	int g;
+	int h;
+	for (g = 0; g < MAPSIZE; g++)
+	{
+		for (h=0; h < MAPSIZE; h++)
+		{
+			pSharkMoveArray[g][h] = 0;
+		}
+	}
 	int i;
 	for(i = 0; i < MAPSIZE; i++) {
 		int i2;
 		for(i2 = 0; i2 < MAPSIZE; i2++) {
-			//pSharkMoveArray[i][i2] = 0;
-			//If there is a fish to the left of this shark OR (if the left of the shark is the edge, check far right of map)
-			//Move the shark to that position and kill the fish
-			if (checkFish(pFishArray,i-1,i2) == 1)
+			if (pSharkArray[i][i2] > -1)
 			{
-				checkSharkArraysAndMove(pSharkArray, pFishArray, pSharkMoveArray, pStarveArray,i,i2,i-1,i2);
-			}
-			else if (checkFish(pFishArray,i+1,i2) == 1)
-			{
-				checkSharkArraysAndMove(pSharkArray, pFishArray, pSharkMoveArray, pStarveArray,i,i2,i+1,i2);
-			}
-			else if (checkFish(pFishArray,i,i2-1) == 1)
-			{
-				checkSharkArraysAndMove(pSharkArray, pFishArray, pSharkMoveArray, pStarveArray,i,i2,i,i2-1);
-			}
-			else if (checkFish(pFishArray,i,i2+1) == 1)
-			{
-				checkSharkArraysAndMove(pSharkArray, pFishArray, pSharkMoveArray, pStarveArray,i,i2,i,i2+1);
-			}
-			/*if (i-1 >= 0)
-			{
-				if (pFishArray[i-1][i2] > -1)// ||(i-1 < 0 && pFishArray[MAPSIZE-1][i2] > -1))
+				//If there is a fish to the left of this shark OR (if the left of the shark is the edge, check far right of map)
+				//Move the shark to that position and kill the fish
+				pSharkArray[i][i2]++;
+				if (checkFish(pFishArray,i-1,i2) == 1)
 				{
-					checkSharkArraysAndMove(pSharkArray, pSharkMoveArray, pStarveArray,i,i2,i-1,i2);
-					pFishArray[i-1][i2] = -1;
-					fishcounter--;
-					printf("Fish eaten");
-					pStarveArray[i-1][i2] = 0;
+					checkSharkArraysAndMove(pSharkArray, pFishArray, pSharkMoveArray, pStarveArray,i,i2,i-1,i2);
 				}
-			}
-			else if (i-1 < 0)
-			{
-				if (pFishArray[MAPSIZE-1][i2] > -1)// ||(i-1 < 0 && pFishArray[MAPSIZE-1][i2] > -1))
+				else if (checkFish(pFishArray,i+1,i2) == 1)
 				{
-					checkSharkArraysAndMove(pSharkArray, pSharkMoveArray, pStarveArray,i,i2,MAPSIZE-1,i2);
-					pFishArray[MAPSIZE-1][i2] = -1;
-					fishcounter--;
-					pStarveArray[MAPSIZE-1][i2] = 0;
+					checkSharkArraysAndMove(pSharkArray, pFishArray, pSharkMoveArray, pStarveArray,i,i2,i+1,i2);
 				}
-			}
-			
-			else if (pFishArray[i+1][i2] > -1 ||(i+1 == MAPSIZE && pFishArray[0][i2] > -1))
-			{
-				if (i+1 == MAPSIZE)
+				else if (checkFish(pFishArray,i,i2-1) == 1)
 				{
-					checkSharkArraysAndMove(pSharkArray, pSharkMoveArray, pStarveArray,i,i2,0,i2);
-					pFishArray[0][i2] = -1;
-					pStarveArray[0][i2] = 0;
+					checkSharkArraysAndMove(pSharkArray, pFishArray, pSharkMoveArray, pStarveArray,i,i2,i,i2-1);
 				}
-				else
+				else if (checkFish(pFishArray,i,i2+1) == 1)
 				{
-					checkSharkArraysAndMove(pSharkArray, pSharkMoveArray, pStarveArray,i,i2,i+1,i2);
-					pFishArray[i+1][i2] = -1;
-					pStarveArray[i+1][i2] = 0;
+					checkSharkArraysAndMove(pSharkArray, pFishArray, pSharkMoveArray, pStarveArray,i,i2,i,i2+1);
 				}
-			}
-			else if (pFishArray[i][i2+1] > -1 ||(i2+1 == MAPSIZE && pFishArray[i][0] > -1))
-			{
-				if (i2+1 == MAPSIZE)
-				{
-					checkSharkArraysAndMove(pSharkArray, pSharkMoveArray, pStarveArray,i,i2,i,0);
-					pFishArray[0][i2] = -1;
-					pStarveArray[0][i2] = 0;
-				}
-				else
-				{
-					checkSharkArraysAndMove(pSharkArray, pSharkMoveArray, pStarveArray,i,i2,i,i2+1);
-					pFishArray[i][i2+1] = -1;
-					pStarveArray[i][i2+1] = 0;
-				}
-			}
-			else if (pFishArray[i][i2-1] > -1 ||(i2-1 < 0 && pFishArray[i][MAPSIZE-1] > -1))
-			{
-				if (i2-1 < 0)
-				{
-					checkSharkArraysAndMove(pSharkArray, pSharkMoveArray, pStarveArray,i,i2,i,MAPSIZE-1);
-					pFishArray[i][MAPSIZE-1] = -1;
-					pStarveArray[i][MAPSIZE-1] = 0;
-				}
-				else
-				{
-					checkSharkArraysAndMove(pSharkArray, pSharkMoveArray, pStarveArray,i,i2,i,i2-1);
-					pFishArray[i][i2-1] = -1;
-					pStarveArray[i][i2-1] = 0;
-				}
-			}
-			*/
-			//Else if there is no fish in the adjacent squares, move randomly
-			else if (pSharkArray[i][i2] > -1)
-			{ 
-				pStarveArray[i][i2]++;
-				int r = rand() % 4;
-				if (r == 0)
-				{
-					if (i+1 < MAPSIZE)
+				//Else if there is no fish in the adjacent squares, move randomly
+				else if (pSharkArray[i][i2] > -1)
+				{ 
+					int r = rand() % 4;
+					if (r == 0)
 					{
-						checkSharkArraysAndMove(pSharkArray, pFishArray,pSharkMoveArray, pStarveArray, i,i2,i+1,i2);
+						if (i+1 < MAPSIZE)
+						{
+							checkSharkArraysAndMove(pSharkArray, pFishArray,pSharkMoveArray, pStarveArray, i,i2,i+1,i2);
+						}
+						else
+						{
+							checkSharkArraysAndMove(pSharkArray, pFishArray, pSharkMoveArray, pStarveArray,i,i2,0,i2);
+						}
+					}
+					else if (r == 1)
+					{
+						if (i-1 >= 0)
+						{
+							checkSharkArraysAndMove(pSharkArray, pFishArray, pSharkMoveArray, pStarveArray,i,i2,i-1,i2);
+						}
+						else
+						{
+							checkSharkArraysAndMove(pSharkArray, pFishArray,pSharkMoveArray, pStarveArray,i,i2,MAPSIZE-1,i2);
+						}
+					}
+					else if (r == 2)
+					{
+						if (i2+1 < MAPSIZE)
+						{
+							checkSharkArraysAndMove(pSharkArray, pFishArray,pSharkMoveArray, pStarveArray,i,i2,i,i2+1);
+						}
+						else
+						{
+							checkSharkArraysAndMove(pSharkArray, pFishArray, pSharkMoveArray, pStarveArray,i,i2,i,0);
+						}	
 					}
 					else
 					{
-						checkSharkArraysAndMove(pSharkArray, pFishArray, pSharkMoveArray, pStarveArray,i,i2,0,i2);
+						if (i2 - 1 >= 0)
+						{
+							checkSharkArraysAndMove(pSharkArray, pFishArray, pSharkMoveArray, pStarveArray,i,i2,i,i2-1);
+						}
+						else
+						{
+							checkSharkArraysAndMove(pSharkArray, pFishArray, pSharkMoveArray, pStarveArray,i,i2,i,MAPSIZE-1);
+						}
 					}
 				}
-				else if (r == 1)
-				{
-					if (i-1 >= 0)
-					{
-						checkSharkArraysAndMove(pSharkArray, pFishArray, pSharkMoveArray, pStarveArray,i,i2,i-1,i2);
-					}
-					else
-					{
-						checkSharkArraysAndMove(pSharkArray, pFishArray,pSharkMoveArray, pStarveArray,i,i2,MAPSIZE-1,i2);
-					}
-				}
-				else if (r == 2)
-				{
-					if (i2+1 < MAPSIZE)
-					{
-						checkSharkArraysAndMove(pSharkArray, pFishArray,pSharkMoveArray, pStarveArray,i,i2,i,i2+1);
-					}
-					else
-					{
-						checkSharkArraysAndMove(pSharkArray, pFishArray, pSharkMoveArray, pStarveArray,i,i2,i,0);
-					}	
-				}
-				else
-				{
-					if (i2 - 1 >= 0)
-					{
-						checkSharkArraysAndMove(pSharkArray, pFishArray, pSharkMoveArray, pStarveArray,i,i2,i,i2-1);
-					}
-					else
-					{
-						checkSharkArraysAndMove(pSharkArray, pFishArray, pSharkMoveArray, pStarveArray,i,i2,i,MAPSIZE-1);
-					}
-				}
-			}
-			//If his starve value is greater than starve, kill shark
-			if (pStarveArray[i][i2] >= starveNum)
-			{
-				pStarveArray[i][i2] = 0;
-				pSharkArray[i][i2] = -1;
-				sharkcounter--;
-				printf("Shark starved");
 			}
 		}
 	}
@@ -538,7 +486,7 @@ void checkSharkArraysAndMove(int pSharkArray[][MAPSIZE], int pFishArray[][MAPSIZ
 	{
 		xOffset = MAPSIZE;
 	}
-	else if (xOffset = MAPSIZE)
+	else if (xOffset == MAPSIZE)
 	{
 		xOffset = 0;
 	}
@@ -546,14 +494,26 @@ void checkSharkArraysAndMove(int pSharkArray[][MAPSIZE], int pFishArray[][MAPSIZ
 	{
 		yOffset = MAPSIZE;
 	}
-	else if (yOffset = MAPSIZE)
+	else if (yOffset == MAPSIZE)
 	{
 		yOffset = 0;
 	}
 	if (pFishArray[xOffset][yOffset] > -1)
 	{
 		pFishArray[xOffset][yOffset] = -1;
-		pStarveArray = 0;
+		pStarveArray[xPos][yPos] = 0;
+	}
+	else
+	{
+		pStarveArray[xPos][yPos]++;
+		//If his starve value is greater than starve, kill shark
+		if (pStarveArray[xPos][yPos] >= starveNum)
+		{
+			pStarveArray[xPos][yPos] = 0;
+			pSharkArray[xPos][yPos] = -1;
+			sharkcounter--;
+			//printf("Shark starved");
+		}
 	}
 	if (pSharkMoveArray[xOffset][yOffset] == 0 && pSharkArray[xOffset][yOffset] == -1)
 	{
@@ -562,14 +522,14 @@ void checkSharkArraysAndMove(int pSharkArray[][MAPSIZE], int pFishArray[][MAPSIZ
 		pSharkArray[xPos][yPos]= -1;
 		pStarveArray[xPos][yPos] = 0;
 		
-		pSharkArray[xOffset][yOffset] ++;
+
 		if (pSharkArray[xOffset][yOffset] > sBreed)
 		{
-			printf("Shark fae breed");
+			//printf("Shark breed");
 			sharkcounter++;
 			pSharkArray[xOffset][yOffset] = 0;
 			pSharkArray[xPos][yPos] = 0;
-			pStarveArray[xPos][yPos] = 0;
+			//pStarveArray[xPos][yPos] = 0;
 		}
 	}
 }
