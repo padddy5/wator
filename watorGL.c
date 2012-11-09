@@ -11,7 +11,7 @@ typedef short bool;
 #define true 1
 #define false 0
 
-#define MAPSIZE 1000
+#define MAPSIZE 250
 #define WINDOWSIZE 1000
 
 #define fishBreedAge 80
@@ -150,7 +150,7 @@ void update() {
 	{
 		int th_id = omp_get_thread_num();
 
-		if(th_id == 0) {
+				if(th_id == 0) {
 			int i;
 			//#pragma omp parallel for private(i)
 			for(i = 0; i < (MAPSIZE/8); i++) {
@@ -165,7 +165,7 @@ void update() {
 		else if(th_id == 1) {
 			int i;
 			//#pragma omp parallel for private(i)
-			for(i = 125; i < 125 +(MAPSIZE/8); i++) {
+			for(i = MAPSIZE/8; i < MAPSIZE/4; i++) {
 				int j;
 				//#pragma omp parallel for private(j)
 				for(j = 0; j < (MAPSIZE/4); j++) {
@@ -177,7 +177,7 @@ void update() {
 		else if(th_id == 2) {
 			int i;
 			//#pragma omp parallel for private(i)
-			for(i = 250; i < 250 +(MAPSIZE/8); i++) {
+			for(i = MAPSIZE/4; i < MAPSIZE/2.666; i++) {
 				int j;
 				//#pragma omp parallel for private(j)
 				for(j = 0; j < (MAPSIZE/4); j++) {
@@ -189,7 +189,7 @@ void update() {
 		else if(th_id == 3) {
 			int i;
 			//#pragma omp parallel for private(i)
-			for(i = 375; i < 375 +(MAPSIZE/8); i++) {
+			for(i = MAPSIZE/2.666; i < MAPSIZE/2; i++) {
 				int j;
 				//#pragma omp parallel for private(j)
 				for(j = 0; j < (MAPSIZE/4); j++) {
@@ -198,13 +198,14 @@ void update() {
 				}
 			}
 		}
+
 		else if(th_id == 4) {
 			int i;
 			//#pragma omp parallel for private(i)
 			for(i = 0; i < (MAPSIZE/8); i++) {
 				int j;
 				//#pragma omp parallel for private(j)
-				for(j = 125; j < 250 + (MAPSIZE/4); j++) {
+				for(j = MAPSIZE/8; j < MAPSIZE/2; j++) {
 
 					updateCreature(i, j);
 				}
@@ -213,10 +214,10 @@ void update() {
 		else if(th_id == 5) {
 			int i;
 			//#pragma omp parallel for private(i)
-			for(i = 125; i < 125 + (MAPSIZE/8); i++) {
+			for(i = MAPSIZE/8; i < MAPSIZE/4; i++) {
 				int j;
 				//#pragma omp parallel for private(j)
-				for(j = 125; j < 250 + (MAPSIZE/4); j++) {
+				for(j = MAPSIZE/8; j < MAPSIZE/2; j++) {
 
 					updateCreature(i, j);
 				}
@@ -225,10 +226,10 @@ void update() {
 		else if(th_id == 6) {
 			int i;
 			//#pragma omp parallel for private(i)
-			for(i = 250; i < 250 + (MAPSIZE/8); i++) {
+			for(i = MAPSIZE/4; i < MAPSIZE/2.666; i++) {
 				int j;
 				//#pragma omp parallel for private(j)
-				for(j = 125; j < 250 + (MAPSIZE/4); j++) {
+				for(j = MAPSIZE/8; j < MAPSIZE/2; j++) {
 
 					updateCreature(i, j);
 				}
@@ -237,15 +238,16 @@ void update() {
 		else if(th_id == 7) {
 			int i;
 			//#pragma omp parallel for private(i)
-			for(i = 375; i < 375 + (MAPSIZE/8); i++) {
+			for(i = MAPSIZE/2.666; i < MAPSIZE/2; i++) {
 				int j;
 				//#pragma omp parallel for private(j)
-				for(j = 125; j < 250 + (MAPSIZE/4); j++) {
+				for(j = MAPSIZE/8; j < MAPSIZE/2; j++) {
 
 					updateCreature(i, j);
 				}
 			}
 		}
+
 	}
 
 	frames++;
@@ -497,7 +499,7 @@ void renderFunction()
 	{
 		int th_id = omp_get_thread_num();
 
-		if(th_id == 0) {
+				if(th_id == 0) {
 			int i;
 			//#pragma omp parallel for private(i)
 			for(i = 0; i < (MAPSIZE/8); i++) {
@@ -512,7 +514,7 @@ void renderFunction()
 		 if(th_id == 0) {
 			int i;
 			//#pragma omp parallel for private(i)
-			for(i = 125; i < 125 +(MAPSIZE/8); i++) {
+			for(i = MAPSIZE/8; i < MAPSIZE/4; i++) {
 				int j;
 				//#pragma omp parallel for private(j)
 				for(j = 0; j < (MAPSIZE/4); j++) {
@@ -524,7 +526,7 @@ void renderFunction()
 		 if(th_id == 0) {
 			int i;
 			//#pragma omp parallel for private(i)
-			for(i = 250; i < 250 +(MAPSIZE/8); i++) {
+			for(i = MAPSIZE/4; i < MAPSIZE/2.666; i++) {
 				int j;
 				//#pragma omp parallel for private(j)
 				for(j = 0; j < (MAPSIZE/4); j++) {
@@ -536,7 +538,7 @@ void renderFunction()
 		 if(th_id == 0) {
 			int i;
 			//#pragma omp parallel for private(i)
-			for(i = 375; i < 375 +(MAPSIZE/8); i++) {
+			for(i = MAPSIZE/2.666; i < MAPSIZE/2; i++) {
 				int j;
 				//#pragma omp parallel for private(j)
 				for(j = 0; j < (MAPSIZE/4); j++) {
@@ -545,13 +547,13 @@ void renderFunction()
 				}
 			}
 		}
-		 if(th_id == 0) {
+		  if(th_id == 0) {
 			int i;
 			//#pragma omp parallel for private(i)
 			for(i = 0; i < (MAPSIZE/8); i++) {
 				int j;
 				//#pragma omp parallel for private(j)
-				for(j = 125; j < 250 + (MAPSIZE/4); j++) {
+				for(j = MAPSIZE/8; j < MAPSIZE/2; j++) {
 
 					renderCreatures(i, j);
 				}
@@ -560,10 +562,10 @@ void renderFunction()
 		 if(th_id == 0) {
 			int i;
 			//#pragma omp parallel for private(i)
-			for(i = 125; i < 125 + (MAPSIZE/8); i++) {
+			for(i = MAPSIZE/8; i < MAPSIZE/4; i++) {
 				int j;
 				//#pragma omp parallel for private(j)
-				for(j = 125; j < 250 + (MAPSIZE/4); j++) {
+				for(j = MAPSIZE/8; j < MAPSIZE/2; j++) {
 
 					renderCreatures(i, j);
 				}
@@ -572,10 +574,10 @@ void renderFunction()
 		 if(th_id == 0) {
 			int i;
 			//#pragma omp parallel for private(i)
-			for(i = 250; i < 250 + (MAPSIZE/8); i++) {
+			for(i = MAPSIZE/4; i < MAPSIZE/2.666; i++) {
 				int j;
 				//#pragma omp parallel for private(j)
-				for(j = 125; j < 250 + (MAPSIZE/4); j++) {
+				for(j = MAPSIZE/8; j < MAPSIZE/2; j++) {
 
 					renderCreatures(i, j);
 				}
@@ -584,10 +586,10 @@ void renderFunction()
 		 if(th_id == 0) {
 			int i;
 			//#pragma omp parallel for private(i)
-			for(i = 375; i < 375 + (MAPSIZE/8); i++) {
+			for(i = MAPSIZE/2.666; i < MAPSIZE/2; i++) {
 				int j;
 				//#pragma omp parallel for private(j)
-				for(j = 125; j < 250 + (MAPSIZE/4); j++) {
+				for(j = MAPSIZE/8; j < MAPSIZE/2; j++) {
 
 					renderCreatures(i, j);
 				}
