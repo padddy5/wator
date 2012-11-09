@@ -5,6 +5,7 @@
 #include <GL/freeglut.h>
 #include <GL/gl.h>
 #include <omp.h> 
+#include <time.h>
 
 typedef short bool;
 #define true 1
@@ -23,6 +24,7 @@ void move(int x, int y, int dirX, int dirY);
 bool isFish(int x, int y);
 void updateCreature(int, int);
 void renderCreatures(int, int);
+void drawBitmapText(char *string,float x,float y,float z) ;
 
 struct creature {
 
@@ -38,12 +40,24 @@ int sharkNum = 1000;
 int fishNum = 1000;
 
 FILE *fp;
+time_t now;
+struct tm* tm;
+float prevTime;
+float currentTime;
+int frames;
+double fps;
+float tslu;
 
 
 int main(int argc, char** argv)
 {
 	srand(time(NULL));
-	
+	prevTime = 0;
+	currentTime = 0;
+	frames = 0;
+	fps =0;
+	tslu = 0;
+
 	//fp=fopen("test", "r");
 
 	int i;
@@ -104,11 +118,33 @@ int main(int argc, char** argv)
  
     return 0;
 }
-
+void drawBitmapText(char *string,float x,float y,float z) 
+{  
+	char *c;
+	glRasterPos3f(x, y,z);
+	for (c=string; *c != '\0'; c++) 
+	{
+	glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, *c);
+	}
+}
 void update() {
 
 	//printf( "%d", "test");
 	//printf("%c", '*');
+
+
+	currentTime =  glutGet(GLUT_ELAPSED_TIME);
+	
+	tslu = currentTime - prevTime;
+
+	//if(tslu >= 1.0) {
+		tslu = tslu /1000;
+		fps = frames /tslu ;//tslu = time since last update
+		frames = 0;
+	//}	
+
+
+	prevTime =  glutGet(GLUT_ELAPSED_TIME);
 
 	#pragma omp parallel
 	{
@@ -211,6 +247,8 @@ void update() {
 			}
 		}
 	}
+
+	frames++;
 }
 
 void move(int x, int y, int dirX, int dirY) {
@@ -444,6 +482,13 @@ void renderFunction()
 
 	update();
 
+	char buffer[16] = "<some characters";
+
+	char c;
+	c = sprintf(buffer, "%lf", fps);
+
+
+	drawBitmapText( &c, WINDOWSIZE -30,0,0);
     glClearColor(1.0, 1.0, 1.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -464,7 +509,7 @@ void renderFunction()
 				}
 			}
 		}
-		else if(th_id == 1) {
+		 if(th_id == 0) {
 			int i;
 			//#pragma omp parallel for private(i)
 			for(i = 125; i < 125 +(MAPSIZE/8); i++) {
@@ -476,7 +521,7 @@ void renderFunction()
 				}
 			}
 		}
-		else if(th_id == 2) {
+		 if(th_id == 0) {
 			int i;
 			//#pragma omp parallel for private(i)
 			for(i = 250; i < 250 +(MAPSIZE/8); i++) {
@@ -488,7 +533,7 @@ void renderFunction()
 				}
 			}
 		}
-		else if(th_id == 3) {
+		 if(th_id == 0) {
 			int i;
 			//#pragma omp parallel for private(i)
 			for(i = 375; i < 375 +(MAPSIZE/8); i++) {
@@ -500,7 +545,7 @@ void renderFunction()
 				}
 			}
 		}
-		else if(th_id == 4) {
+		 if(th_id == 0) {
 			int i;
 			//#pragma omp parallel for private(i)
 			for(i = 0; i < (MAPSIZE/8); i++) {
@@ -512,7 +557,7 @@ void renderFunction()
 				}
 			}
 		}
-		else if(th_id == 5) {
+		 if(th_id == 0) {
 			int i;
 			//#pragma omp parallel for private(i)
 			for(i = 125; i < 125 + (MAPSIZE/8); i++) {
@@ -524,7 +569,7 @@ void renderFunction()
 				}
 			}
 		}
-		else if(th_id == 6) {
+		 if(th_id == 0) {
 			int i;
 			//#pragma omp parallel for private(i)
 			for(i = 250; i < 250 + (MAPSIZE/8); i++) {
@@ -536,7 +581,7 @@ void renderFunction()
 				}
 			}
 		}
-		else if(th_id == 7) {
+		 if(th_id == 0) {
 			int i;
 			//#pragma omp parallel for private(i)
 			for(i = 375; i < 375 + (MAPSIZE/8); i++) {
