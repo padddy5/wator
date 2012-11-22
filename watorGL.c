@@ -11,7 +11,7 @@ typedef short bool;
 #define true 1
 #define false 0
 
-#define MAPSIZE 1500
+#define MAPSIZE 250
 #define WINDOWSIZE 1000
 
 #define fishBreedAge 80
@@ -156,11 +156,20 @@ void update() {
 	fps = frames /tslu ;//tslu = time since last update
 	frames = 0;
 	//}	
-
-
 	prevTime =  glutGet(GLUT_ELAPSED_TIME);
 
-	#pragma omp parallel
+	if(totalFrames == frameLimit && timeTaken == 0) {
+		
+		endTime = omp_get_wtime();
+		timeTaken = endTime - startTime;
+	}
+	
+	char bufferB[16] = "<some characters";
+	char b;
+	b = sprintf(bufferB, "%lf", timeTaken);
+	drawBitmapText( &b, WINDOWSIZE -90,0,0);
+
+	#pragma omp parallel num_threads(8)
 	{
 		int th_id = omp_get_thread_num();
 
@@ -176,7 +185,7 @@ void update() {
 				}
 			}
 		}
-		 if(th_id == 0) {
+		 if(th_id == 1) {
 			int i;
 			//#pragma omp parallel for private(i)
 			for(i = MAPSIZE/2; i < MAPSIZE-1; i++) {
@@ -188,7 +197,7 @@ void update() {
 				}
 			}
 		}
-		 if(th_id == 0) {
+		 if(th_id == 2) {
 			int i;
 			//#pragma omp parallel for private(i)
 			for(i = 0; i < MAPSIZE/2; i++) {
@@ -200,7 +209,7 @@ void update() {
 				}
 			}
 		}
-		 if(th_id == 0) {
+		 if(th_id == 3) {
 			int i;
 			//#pragma omp parallel for private(i)
 			for(i = MAPSIZE/2; i < MAPSIZE-1; i++) {
@@ -212,7 +221,7 @@ void update() {
 				}
 			}
 		}
-		 if(th_id == 0) {
+		 if(th_id == 4) {
 			int i;
 			//#pragma omp parallel for private(i)
 			for(i = 0; i < (MAPSIZE/2); i++) {
@@ -224,7 +233,7 @@ void update() {
 				}
 			}
 		}
-		 if(th_id == 0) {
+		 if(th_id == 5) {
 			int i;
 			//#pragma omp parallel for private(i)
 			for(i = MAPSIZE/2; i < MAPSIZE-1; i++) {
@@ -236,7 +245,7 @@ void update() {
 				}
 			}
 		}
-		 if(th_id == 0) {
+		 if(th_id == 6) {
 			int i;
 			//#pragma omp parallel for private(i)
 			for(i = 0; i < (MAPSIZE/2); i++) {
@@ -248,7 +257,7 @@ void update() {
 				}
 			}
 		}
-		 if(th_id == 0) {
+		 if(th_id == 7) {
 			int i;
 			//#pragma omp parallel for private(i)
 			for(i = MAPSIZE/2; i < MAPSIZE-1; i++) {
@@ -401,12 +410,14 @@ void updateCreature(int i, int j) {
 				else {
 					bool fishFound = false;
 					int checks = 0;
-
+					//#pragma omp parallel 
+		
 					while(checks < 5) {
 						
 						// Look for nearby fish and eat it if one is found
 						int dir = rand() % 4;
-						if(dir == 0){
+
+					if(dir == 0){
 							if(isFish(i-1, 0)) {
 								move(i, j, -1, 0);
 								fishFound = true;
@@ -414,6 +425,7 @@ void updateCreature(int i, int j) {
 							} 
 							else{checks++;}
 						}
+
 						else if(dir == 1) {
 							if(isFish(i+1, 0)) {
 								move(i, j, 1, 0);
@@ -421,7 +433,9 @@ void updateCreature(int i, int j) {
 								checks = 5;
 							}
 							else{checks++;}
+
 						}
+
 						else if(dir == 2) {
 							if(isFish(0, 1)) {
 								move(i, j, 0, 1);
@@ -430,6 +444,7 @@ void updateCreature(int i, int j) {
 							}
 							else{checks++;}
 						}
+
 						else if(dir == 3) {
 							if(isFish(0, -1)) {
 								move(i, j, 0, -1);
@@ -438,7 +453,9 @@ void updateCreature(int i, int j) {
 							}
 							else{checks++;}
 						}
-					}		
+					
+
+}		
 
 					if(fishFound == false) {
 						// Move randomly
