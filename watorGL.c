@@ -11,7 +11,7 @@ typedef short bool;
 #define true 1
 #define false 0
 
-#define MAPSIZE 250
+#define MAPSIZE 500
 #define WINDOWSIZE 1000
 
 #define fishBreedAge 80
@@ -20,10 +20,10 @@ typedef short bool;
 
 void renderFunction();
 void update();
-void move(int x, int y, int dirX, int dirY);
-bool isFish(int x, int y);
-void updateCreature(int, int);
-void renderCreatures(int, int);
+void move(short x, short y, short dirX, short dirY);
+bool isFish(short x, short y);
+void updateCreature(short, short);
+void renderCreatures(short, short);
 void drawBitmapText(char *string,float x,float y,float z) ;
 
 struct creature {
@@ -31,20 +31,20 @@ struct creature {
 	short type; // 0=fish, 1=shark
 	bool moved;
 	short age;
-	short starve;	
+	short starve;
 };
 
 struct creature map[MAPSIZE][MAPSIZE];
 
-int sharkNum = 1000;
-int fishNum = 1000;
+short sharkNum = 1000;
+short fishNum = 1000;
 
 FILE *fp;
 time_t now;
 struct tm* tm;
 float prevTime;
 float currentTime;
-int frames;
+short frames;
 double fps;
 float tslu;
 
@@ -57,7 +57,7 @@ float frameLimit;
 float timeTaken;
 
 
-int main(int argc, char** argv)
+short main(int argc, char** argv)
 {
 	startTime = omp_get_wtime();
 
@@ -74,10 +74,10 @@ int main(int argc, char** argv)
 	totalFrames = 0;
 	timeTaken = 0;
 
-	int i;
+	short i;
 	#pragma omp parallel for private(i)
 	for(i = 0; i < MAPSIZE; i++) {
-		int j;
+		short j;
 		#pragma omp parallel for private(j)
 		for(j = 0; j < MAPSIZE; j++) {
 			map[i][j].type = -1;
@@ -88,11 +88,11 @@ int main(int argc, char** argv)
 	}
 
 	// Create fish
-	int k;
+	short k;
 	#pragma omp parallel for private(k)
 	for(k = 0; k < fishNum; k++) {
-		int posX = rand() % MAPSIZE;
-		int posY = rand() % MAPSIZE;
+		short posX = rand() % MAPSIZE;
+		short posY = rand() % MAPSIZE;
 
 		map[posY][posX].type = 0;
 		map[posY][posX].moved = false;
@@ -101,11 +101,11 @@ int main(int argc, char** argv)
 	}
 
 	// Create sharks
-	int s;
+	short s;
 	
 	for(s = 0; s < sharkNum; ) {
-		int posX = rand() % MAPSIZE;
-		int posY = rand() % MAPSIZE;
+		short posX = rand() % MAPSIZE;
+		short posY = rand() % MAPSIZE;
 
 		if(map[posY][posX].type <= -1) {
 			map[posY][posX].type = 1;
@@ -146,16 +146,14 @@ void update() {
 	//printf( "%d", "test");
 	//printf("%c", '*');
 
-
 	currentTime =  glutGet(GLUT_ELAPSED_TIME);
 	
 	tslu = currentTime - prevTime;
 
-	//if(tslu >= 1.0) {
 	tslu = tslu /1000;
 	fps = frames /tslu ;//tslu = time since last update
 	frames = 0;
-	//}	
+
 	prevTime =  glutGet(GLUT_ELAPSED_TIME);
 
 	if(totalFrames == frameLimit && timeTaken == 0) {
@@ -164,122 +162,49 @@ void update() {
 		timeTaken = endTime - startTime;
 	}
 	
+glColor3f(1.0, 0.0, 1.0);
 	char bufferB[16] = "<some characters";
 	char b;
 	b = sprintf(bufferB, "%lf", timeTaken);
 	drawBitmapText( &b, WINDOWSIZE -90,0,0);
 
-	#pragma omp parallel num_threads(8)
+	short i;
+	short j;
+
+	#pragma omp parallel private(i,j) num_threads(8)
 	{
 		int th_id = omp_get_thread_num();
 
-		if(th_id == 0) {
-			int i;
-			//#pragma omp parallel for private(i)
-			for(i = 0; i < (MAPSIZE/2); i++) {
-				int j;
-				//#pragma omp parallel for private(j)
-				for(j = 0; j < (MAPSIZE/4); j++) {
-
-					updateCreature(i, j);
+		//if(th_id == 1){
+		#pragma omp for private(i)
+			for(i = 0; i < (MAPSIZE-1); i++) {
+			
+				#pragma omp private(j) for
+				for(j = 0; j < (MAPSIZE-1); j++) {
+						
+				
+					if(map[i][j].type != -1){
+						#pragma omp critical
+						{
+							updateCreature(i, j);
+							//updateCreature(i, j+1);
+							//updateCreature(i, j+2);
+							//updateCreature(i, j+3);
+						}	
+					}
 				}
 			}
-		}
-		 if(th_id == 1) {
-			int i;
-			//#pragma omp parallel for private(i)
-			for(i = MAPSIZE/2; i < MAPSIZE-1; i++) {
-				int j;
-				//#pragma omp parallel for private(j)
-				for(j = 0; j < (MAPSIZE/4); j++) {
-
-					updateCreature(i, j);
-				}
-			}
-		}
-		 if(th_id == 2) {
-			int i;
-			//#pragma omp parallel for private(i)
-			for(i = 0; i < MAPSIZE/2; i++) {
-				int j;
-				//#pragma omp parallel for private(j)
-				for(j = (MAPSIZE/4); j < (MAPSIZE/4)*2; j++) {
-
-					updateCreature(i, j);
-				}
-			}
-		}
-		 if(th_id == 3) {
-			int i;
-			//#pragma omp parallel for private(i)
-			for(i = MAPSIZE/2; i < MAPSIZE-1; i++) {
-				int j;
-				//#pragma omp parallel for private(j)
-				for(j = (MAPSIZE/4); j < (MAPSIZE/4)*2; j++) {
-
-					updateCreature(i, j);
-				}
-			}
-		}
-		 if(th_id == 4) {
-			int i;
-			//#pragma omp parallel for private(i)
-			for(i = 0; i < (MAPSIZE/2); i++) {
-				int j;
-				//#pragma omp parallel for private(j)
-				for(j = (MAPSIZE/4)*2; j < (MAPSIZE/4)*3; j++) {
-
-					updateCreature(i, j);
-				}
-			}
-		}
-		 if(th_id == 5) {
-			int i;
-			//#pragma omp parallel for private(i)
-			for(i = MAPSIZE/2; i < MAPSIZE-1; i++) {
-				int j;
-				//#pragma omp parallel for private(j)
-				for(j = (MAPSIZE/4)*2; j < (MAPSIZE/4)*3; j++) {
-
-					updateCreature(i, j);
-				}
-			}
-		}
-		 if(th_id == 6) {
-			int i;
-			//#pragma omp parallel for private(i)
-			for(i = 0; i < (MAPSIZE/2); i++) {
-				int j;
-				//#pragma omp parallel for private(j)
-				for(j = (MAPSIZE/4)*3; j < ((MAPSIZE/4)*4)+1; j++) {
-
-					updateCreature(i, j);
-				}
-			}
-		}
-		 if(th_id == 7) {
-			int i;
-			//#pragma omp parallel for private(i)
-			for(i = MAPSIZE/2; i < MAPSIZE-1; i++) {
-				int j;
-				//#pragma omp parallel for private(j)
-				for(j = (MAPSIZE/4)*3; j < ((MAPSIZE/4)*4)+1; j++) {
-
-					updateCreature(i, j);
-				}
-			}
-		}
-
+		//}
 	}
 
 	frames++;
 	totalFrames++;
 }
 
-void move(int x, int y, int dirX, int dirY) {
+void move(short x, short y, short dirX, short dirY) {
 		
-	int destX = x+dirX;
-	int destY = y+dirY;
+	short destX = x+dirX;
+	short destY = y+dirY;
 
 	bool fishTarget = false;
 
@@ -288,14 +213,14 @@ void move(int x, int y, int dirX, int dirY) {
 		if(x+dirX < 0) {
 			destX = MAPSIZE-2;	
 		}		
-		else if(x+dirX >= MAPSIZE) {
+		else if(x+dirX >= MAPSIZE-2) {
 			destX = 0;	
 		}
 
 		if(y+dirY < 0) {
-			destY = MAPSIZE-1;	
+			destY = MAPSIZE-2;	
 		}		
-		else if(y+dirY >= MAPSIZE) {
+		else if(y+dirY >= MAPSIZE-2) {
 			destY = 0;
 		}
 		
@@ -362,10 +287,10 @@ void move(int x, int y, int dirX, int dirY) {
 	}
 }
 
-bool isFish(int x, int y) {
+bool isFish(short x, short y) {
 
-	int targetX = x;
-	int targetY = y;	
+	short targetX = x;
+	short targetY = y;	
 
 	if(targetX < 0) {
 		targetX = MAPSIZE-1;	
@@ -388,99 +313,97 @@ bool isFish(int x, int y) {
 	return false;
 }
 
-void updateCreature(int i, int j) {
+void updateCreature(short i, short j) {
 
 	if(map[i][j].moved == false) {
-				if(map[i][j].type == 0) {
-					// Move randomly
-					int dir = rand() % 4;
-					if (dir == 0) {
-						move(i, j, 0, 1);
-					}
-					else if(dir == 1) {
-						move(i, j, 0, -1);
-					}
-					else if(dir == 2) {
-						move(i, j, 1, 0);
-					}
-					else if(dir == 3) {
+		if(map[i][j].type == 0) {
+			// Move randomly
+			short dir = rand() % 4;
+			if (dir == 0) {
+				move(i, j, 0, 1);
+			}
+			else if(dir == 1) {
+				move(i, j, 0, -1);
+			}
+			else if(dir == 2) {
+				move(i, j, 1, 0);
+			}
+			else if(dir == 3) {
+				move(i, j, -1, 0);
+			}
+		}
+		else {
+			bool fishFound = false;
+			short checks = 0;
+			//#pragma omp parallel 
+
+			while(checks < 5) {
+				
+				// Look for nearby fish and eat it if one is found
+				short dir = rand() % 4;
+
+			if(dir == 0){
+					if(isFish(i-1, 0)) {
 						move(i, j, -1, 0);
-					}
+						fishFound = true;
+						checks = 5;
+					} 
+					else{checks++;}
 				}
-				else {
-					bool fishFound = false;
-					int checks = 0;
-					//#pragma omp parallel 
-		
-					while(checks < 5) {
-						
-						// Look for nearby fish and eat it if one is found
-						int dir = rand() % 4;
 
-					if(dir == 0){
-							if(isFish(i-1, 0)) {
-								move(i, j, -1, 0);
-								fishFound = true;
-								checks = 5;
-							} 
-							else{checks++;}
-						}
-
-						else if(dir == 1) {
-							if(isFish(i+1, 0)) {
-								move(i, j, 1, 0);
-								fishFound = true;
-								checks = 5;
-							}
-							else{checks++;}
-
-						}
-
-						else if(dir == 2) {
-							if(isFish(0, 1)) {
-								move(i, j, 0, 1);
-								fishFound = true;
-								checks = 5;
-							}
-							else{checks++;}
-						}
-
-						else if(dir == 3) {
-							if(isFish(0, -1)) {
-								move(i, j, 0, -1);
-								fishFound = true;
-								checks = 5;
-							}
-							else{checks++;}
-						}
-					
-
-}		
-
-					if(fishFound == false) {
-						// Move randomly
-						int dir = rand() % 4;
-						if (dir == 0) {
-							move(i, j, 0, 1);
-						}
-						else if(dir == 1) {
-							move(i, j, 0, -1);
-						}
-						else if(dir == 2) {
-							move(i, j, 1, 0);
-						}
-						else if(dir == 3) {
-							move(i, j, -1, 0);
-						}
+				else if(dir == 1) {
+					if(isFish(i+1, 0)) {
+						move(i, j, 1, 0);
+						fishFound = true;
+						checks = 5;
 					}
+					else{checks++;}
+
+				}
+
+				else if(dir == 2) {
+					if(isFish(0, 1)) {
+						move(i, j, 0, 1);
+						fishFound = true;
+						checks = 5;
+					}
+					else{checks++;}
+				}
+
+				else if(dir == 3) {
+					if(isFish(0, -1)) {
+						move(i, j, 0, -1);
+						fishFound = true;
+						checks = 5;
+					}
+					else{checks++;}
+				}
+			}		
+
+			if(fishFound == false) {
+				// Move randomly
+				short dir = rand() % 4;
+				if (dir == 0) {
+					move(i, j, 0, 1);
+				}
+				else if(dir == 1) {
+					move(i, j, 0, -1);
+				}
+				else if(dir == 2) {
+					move(i, j, 1, 0);
+				}
+				else if(dir == 3) {
+					move(i, j, -1, 0);
 				}
 			}
+		}
+	}
 }
 
 
-void renderCreatures(int i, int j)
+void renderCreatures(short i, short j)
 {
-	int size = 2;
+	short size = 2;
 	if (map[i][j].type == 0) {
 
 		glColor3f(0.0, 0.0, 1.0);
@@ -505,9 +428,9 @@ void renderCreatures(int i, int j)
 
 void renderFunction()
 {
-	int x;
+	short x;
 	for(x = 0; x < MAPSIZE; x++) {
-		int y;
+		short y;
 		for(y = 0; y < MAPSIZE; y++) {
 
 			map[x][y].moved = false;
@@ -516,6 +439,7 @@ void renderFunction()
 
 	update();
 
+glColor3f(1.0, 0.0, 1.0);
 	char buffer[16] = "<some characters";
 	char c;
 	c = sprintf(buffer, "%lf", fps);
@@ -536,14 +460,14 @@ void renderFunction()
     glClearColor(1.0, 1.0, 1.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
-	int th_id = omp_get_thread_num();
-
-	if(th_id == 0) {
-		int i;
-		//#pragma omp parallel for private(i)
+	//#pragma omp parallel num_threads(8)
+	{
+		short i;
+		short j;
+		//#pragma omp for private(i)
 		for(i = 0; i < (MAPSIZE); i++) {
-			int j;
-			//#pragma omp parallel for private(j)
+			
+			//#pragma omp privatefirst(j) for
 			for(j = 0; j < (MAPSIZE); j++) {
 
 				renderCreatures(i, j);
