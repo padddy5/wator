@@ -11,7 +11,7 @@ typedef short bool;
 #define true 1
 #define false 0
 
-#define MAPSIZE 2000
+#define MAPSIZE 500
 #define WINDOWSIZE 1000
 
 #define fishBreedAge 80
@@ -55,7 +55,6 @@ float totalFrames;
 float frameLimit;
 
 float timeTaken;
-
 
 short main(int argc, char** argv)
 {
@@ -178,14 +177,14 @@ void update() {
 						
 					// Update fish
 					if(map[i][j].type == 0) {
-						#pragma omp critical
+						//#pragma omp critical
 						{
 							updateCreature(i, j);
 						}	
 					}
 					// Update sharks
 					else if(map[i][j].type == 1) {
-						#pragma omp critical
+						//#pragma omp critical
 						{
 							updateCreature(i, j);
 						}
@@ -443,32 +442,17 @@ void renderFunction()
 
 	update();
 
-	/*if(totalFrames == frameLimit && timeTaken == 0) {
-		
-		endTime = omp_get_wtime();
-		timeTaken = endTime - startTime;
-	}
-	
-	char bufferB[16] = "<some characters";
-	char b;
-	b = sprintf(bufferB, "%lf", timeTaken);
-	drawBitmapText( &b, WINDOWSIZE -60,0,0);*/
-
     glClearColor(1.0, 1.0, 1.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
-	//#pragma omp parallel num_threads(8)
-	{
-		short i;
-		short j;
-		//#pragma omp for private(i)
-		for(i = 0; i < (MAPSIZE); i++) {
-			
-			//#pragma omp privatefirst(j) for
-			for(j = 0; j < (MAPSIZE); j++) {
+	short i;
+	short j;
 
-				renderCreatures(i, j);
-			}
+	for(i = 0; i < (MAPSIZE); i++) {
+
+		for(j = 0; j < (MAPSIZE); j++) {
+
+			renderCreatures(i, j);
 		}
 	}
 
