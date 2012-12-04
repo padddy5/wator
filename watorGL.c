@@ -1,3 +1,7 @@
+/** @file watorGL.c
+ *	@brief Wator simulation
+ */
+
 #include<stdio.h>
 #include <time.h>
 #include <stdlib.h>
@@ -18,34 +22,59 @@ typedef short bool;
 #define sharkBreedAge 300
 #define turnsToStarve 250
 
-void renderFunction();
+// Function definitions
 void update();
-void move(short x, short y, short dirX, short dirY);
+void updateMap();
+void moveBreedStarve(short x, short y, short dirX, short dirY);
 bool isFish(short x, short y);
 void updateCreature(short, short);
 void renderCreatures(short, short);
 void drawBitmapText(char *string,float x,float y,float z) ;
 
+/**
+* @brief Creature object to contain fish or shark information
+*/
 struct creature {
-
-	short type; // 0=fish, 1=shark, -1=empty
+	
+	/**
+	* @brief 0=fish, 1=shark, -1=empty
+	*/
+	short type; 
+	/**
+	* @brief Has this creature moved, true/false
+	*/
 	bool moved;
+	/**
+	* @brief The age of the creature
+	*/
 	short age;
+	/**
+	* @brief How long the creature has gone without food. Disregarded for fish.
+	*/
 	short starve;
 };
 
 struct creature map[MAPSIZE][MAPSIZE];
 
+/**
+* @brief Number of sharks
+*/
 short sharkNum = 1000;
+/**
+* @brief Number of fish
+*/
 short fishNum = 1000;
 
-FILE *fp;
 time_t now;
 struct tm* tm;
 float prevTime;
 float currentTime;
 short frames;
 double fps;
+
+/**
+* @brief Time since last update
+*/
 float tslu;
 
 int startTime;
@@ -56,6 +85,9 @@ float frameLimit;
 
 float timeTaken;
 
+/**
+* @brief Initializes the mao and creates creatures.
+*/
 short main(int argc, char** argv)
 {
 	startTime = omp_get_wtime();
@@ -120,7 +152,7 @@ short main(int argc, char** argv)
     glutInitWindowSize(WINDOWSIZE,WINDOWSIZE);
     glutInitWindowPosition(0,0);
     glutCreateWindow("Wator");
-    glutDisplayFunc(renderFunction);
+    glutDisplayFunc(update);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -131,19 +163,53 @@ short main(int argc, char** argv)
  
     return 0;
 }
-void drawBitmapText(char *string,float x,float y,float z) 
-{  
-	char *c;
-	glRasterPos3f(x, y,z);
-	for (c=string; *c != '\0'; c++) 
-	{
-	glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, *c);
-	}
-}
-void update() {
 
-	//printf( "%d", "test");
-	//printf("%c", '*');
+/**
+* @brief Updates and draws all creatures
+*/
+void update()
+{
+	short x;
+	for(x = 0; x < MAPSIZE; x++) {
+		short y;
+		for(y = 0; y < MAPSIZE; y++) {
+
+			map[x][y].moved = false;
+		}
+	}
+
+	updateMap();
+
+    glClearColor(1.0, 1.0, 1.0, 0.0);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+	short i;
+	short j;
+
+	for(i = 0; i < (MAPSIZE); i++) {
+
+		for(j = 0; j < (MAPSIZE); j++) {
+
+			renderCreatures(i, j);
+		}
+	}
+
+	glColor3f(1.0, 0.0, 1.0);
+	char buffer[16] = "<some characters";
+	char c;
+	c = sprintf(buffer, "%lf", fps);
+	drawBitmapText( &c, WINDOWSIZE -30,0,0);
+		
+    glFlush();
+
+	//redraw
+	glutPostRedisplay();
+}
+
+/**
+* @brief Updates the fishes and sharks in the map. Called in update()
+*/
+void updateMap() {
 
 	currentTime =  glutGet(GLUT_ELAPSED_TIME);
 	
@@ -204,7 +270,108 @@ void update() {
 	totalFrames++;
 }
 
-void move(short x, short y, short dirX, short dirY) {
+/**
+* @brief Updates creature is the map array. Called in updateMap()
+*
+* @param i The x position of the creature to be updated.
+* @param j The y position of the creature to be updated.
+*/
+void updateCreature(short i, short j) {
+
+	if(map[i][j].moved == false) {
+		if(map[i][j].type == 0) {
+			// Move randomly
+			short dir = rand() % 4;
+			if (dir == 0) {
+				moveBreedStarve(i, j, 0, 1);
+			}
+			else if(dir == 1) {
+				moveBreedStarve(i, j, 0, -1);
+			}
+			else if(dir == 2) {
+				moveBreedStarve(i, j, 1, 0);
+			}
+			else if(dir == 3) {
+				moveBreedStarve(i, j, -1, 0);
+			}
+		}
+		else {
+			bool fishFound = false;
+			short checks = 0;
+			//#pragma omp parallel 
+
+			while(checks < 5) {
+				
+				// Look for nearby fish and eat it if one is found
+				short dir = rand() % 4;
+
+			if(dir == 0){
+					if(isFish(i-1, 0)) {
+						moveBreedStarve(i, j, -1, 0);
+						fishFound = true;
+						checks = 5;
+					} 
+					else{checks++;}
+				}
+
+				else if(dir == 1) {
+					if(isFish(i+1, 0)) {
+						moveBreedStarve(i, j, 1, 0);
+						fishFound = true;
+						checks = 5;
+					}
+					else{checks++;}
+
+				}
+
+				else if(dir == 2) {
+					if(isFish(0, 1)) {
+						moveBreedStarve(i, j, 0, 1);
+						fishFound = true;
+						checks = 5;
+					}
+					else{checks++;}
+				}
+
+				else if(dir == 3) {
+					if(isFish(0, -1)) {
+						moveBreedStarve(i, j, 0, -1);
+						fishFound = true;
+						checks = 5;
+					}
+					else{checks++;}
+				}
+			}		
+
+			if(fishFound == false) {
+				// Move randomly
+				short dir = rand() % 4;
+				if (dir == 0) {
+					moveBreedStarve(i, j, 0, 1);
+				}
+				else if(dir == 1) {
+					moveBreedStarve(i, j, 0, -1);
+				}
+				else if(dir == 2) {
+					moveBreedStarve(i, j, 1, 0);
+				}
+				else if(dir == 3) {
+					moveBreedStarve(i, j, -1, 0);
+				}
+			}
+		}
+	}
+}
+
+/**
+* @brief Moves, starves and/or breeds a creature contained in the map. Called in updateCreature()
+*
+* @param x The x position of the creature to be moved.
+* @param y The y position of the creature to be moved.
+* @param dirX The direction in which to move the creature along the x axis.
+* @param dirY The direction in which to move the creature along the y axis
+*/
+void moveBreedStarve(short x, short y, short dirX, short dirY) {
 		
 	short destX = x+dirX;
 	short destY = y+dirY;
@@ -290,6 +457,43 @@ void move(short x, short y, short dirX, short dirY) {
 	}
 }
 
+/**
+* @brief Renders the creature at the given position. Called in update()
+*
+* @param i The x position of the creature to be rendered.
+* @param j The y position of the creature to be rendered.
+*/
+void renderCreatures(short i, short j)
+{
+	short size = 2;
+	if (map[i][j].type == 0) {
+
+		glColor3f(0.0, 0.0, 1.0);
+		glBegin(GL_POLYGON);
+			glVertex2f(i*size, j*size);
+			glVertex2f((i*size)+size, j*size);
+			glVertex2f((i*size)+size, (j*size)+size);
+			glVertex2f(i*size, (j*size)+size);
+		glEnd();
+	}
+	else if (map[i][j].type == 1) {
+
+		glColor3f(1.0, 0.0, 0.0);
+		glBegin(GL_POLYGON);
+			glVertex2f(i*size, j*size);
+			glVertex2f((i*size)+size, j*size);
+			glVertex2f((i*size)+size, (j*size)+size);
+			glVertex2f(i*size, (j*size)+size);
+		glEnd();
+	}
+}
+
+/**
+* @brief Looks for a fish at the given position. Called in updateCreature()
+*
+* @param x The x position to check.
+* @param y The y position to check.
+*/
 bool isFish(short x, short y) {
 
 	short targetX = x;
@@ -316,154 +520,20 @@ bool isFish(short x, short y) {
 	return false;
 }
 
-void updateCreature(short i, short j) {
-
-	if(map[i][j].moved == false) {
-		if(map[i][j].type == 0) {
-			// Move randomly
-			short dir = rand() % 4;
-			if (dir == 0) {
-				move(i, j, 0, 1);
-			}
-			else if(dir == 1) {
-				move(i, j, 0, -1);
-			}
-			else if(dir == 2) {
-				move(i, j, 1, 0);
-			}
-			else if(dir == 3) {
-				move(i, j, -1, 0);
-			}
-		}
-		else {
-			bool fishFound = false;
-			short checks = 0;
-			//#pragma omp parallel 
-
-			while(checks < 5) {
-				
-				// Look for nearby fish and eat it if one is found
-				short dir = rand() % 4;
-
-			if(dir == 0){
-					if(isFish(i-1, 0)) {
-						move(i, j, -1, 0);
-						fishFound = true;
-						checks = 5;
-					} 
-					else{checks++;}
-				}
-
-				else if(dir == 1) {
-					if(isFish(i+1, 0)) {
-						move(i, j, 1, 0);
-						fishFound = true;
-						checks = 5;
-					}
-					else{checks++;}
-
-				}
-
-				else if(dir == 2) {
-					if(isFish(0, 1)) {
-						move(i, j, 0, 1);
-						fishFound = true;
-						checks = 5;
-					}
-					else{checks++;}
-				}
-
-				else if(dir == 3) {
-					if(isFish(0, -1)) {
-						move(i, j, 0, -1);
-						fishFound = true;
-						checks = 5;
-					}
-					else{checks++;}
-				}
-			}		
-
-			if(fishFound == false) {
-				// Move randomly
-				short dir = rand() % 4;
-				if (dir == 0) {
-					move(i, j, 0, 1);
-				}
-				else if(dir == 1) {
-					move(i, j, 0, -1);
-				}
-				else if(dir == 2) {
-					move(i, j, 1, 0);
-				}
-				else if(dir == 3) {
-					move(i, j, -1, 0);
-				}
-			}
-		}
+/**
+* @brief Draws text to the screen
+*
+* @param string The string to be drawn
+* @param x The x co-ordinate to draw the text. 
+* @param y The y co-ordinate to draw the text. 
+* @param z The z co-ordinate to draw the text. 
+*/
+void drawBitmapText(char *string,float x,float y,float z) 
+{  
+	char *c;
+	glRasterPos3f(x, y,z);
+	for (c=string; *c != '\0'; c++) 
+	{
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, *c);
 	}
-}
-
-
-void renderCreatures(short i, short j)
-{
-	short size = 2;
-	if (map[i][j].type == 0) {
-
-		glColor3f(0.0, 0.0, 1.0);
-		glBegin(GL_POLYGON);
-			glVertex2f(i*size, j*size);
-			glVertex2f((i*size)+size, j*size);
-			glVertex2f((i*size)+size, (j*size)+size);
-			glVertex2f(i*size, (j*size)+size);
-		glEnd();
-	}
-	else if (map[i][j].type == 1) {
-
-		glColor3f(1.0, 0.0, 0.0);
-		glBegin(GL_POLYGON);
-			glVertex2f(i*size, j*size);
-			glVertex2f((i*size)+size, j*size);
-			glVertex2f((i*size)+size, (j*size)+size);
-			glVertex2f(i*size, (j*size)+size);
-		glEnd();
-	}
-}
-
-void renderFunction()
-{
-	short x;
-	for(x = 0; x < MAPSIZE; x++) {
-		short y;
-		for(y = 0; y < MAPSIZE; y++) {
-
-			map[x][y].moved = false;
-		}
-	}
-
-	update();
-
-    glClearColor(1.0, 1.0, 1.0, 0.0);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-	short i;
-	short j;
-
-	for(i = 0; i < (MAPSIZE); i++) {
-
-		for(j = 0; j < (MAPSIZE); j++) {
-
-			renderCreatures(i, j);
-		}
-	}
-
-	glColor3f(1.0, 0.0, 1.0);
-	char buffer[16] = "<some characters";
-	char c;
-	c = sprintf(buffer, "%lf", fps);
-	drawBitmapText( &c, WINDOWSIZE -30,0,0);
-		
-    glFlush();
-
-	//redraw
-	glutPostRedisplay();
 }
