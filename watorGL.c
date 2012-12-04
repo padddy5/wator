@@ -11,7 +11,7 @@ typedef short bool;
 #define true 1
 #define false 0
 
-#define MAPSIZE 500
+#define MAPSIZE 2000
 #define WINDOWSIZE 1000
 
 #define fishBreedAge 80
@@ -28,7 +28,7 @@ void drawBitmapText(char *string,float x,float y,float z) ;
 
 struct creature {
 
-	short type; // 0=fish, 1=shark
+	short type; // 0=fish, 1=shark, -1=empty
 	bool moved;
 	short age;
 	short starve;
@@ -161,12 +161,6 @@ void update() {
 		endTime = omp_get_wtime();
 		timeTaken = endTime - startTime;
 	}
-	
-glColor3f(1.0, 0.0, 1.0);
-	char bufferB[16] = "<some characters";
-	char b;
-	b = sprintf(bufferB, "%lf", timeTaken);
-	drawBitmapText( &b, WINDOWSIZE -90,0,0);
 
 	short i;
 	short j;
@@ -182,20 +176,30 @@ glColor3f(1.0, 0.0, 1.0);
 				#pragma omp private(j) for
 				for(j = 0; j < (MAPSIZE-1); j++) {
 						
-				
-					if(map[i][j].type != -1){
+					// Update fish
+					if(map[i][j].type == 0) {
 						#pragma omp critical
 						{
 							updateCreature(i, j);
-							//updateCreature(i, j+1);
-							//updateCreature(i, j+2);
-							//updateCreature(i, j+3);
 						}	
+					}
+					// Update sharks
+					else if(map[i][j].type == 1) {
+						#pragma omp critical
+						{
+							updateCreature(i, j);
+						}
 					}
 				}
 			}
 		//}
 	}
+
+	glColor3f(1.0, 0.0, 1.0);
+	char bufferB[16] = "<some characters";
+	char b;
+	b = sprintf(bufferB, "%lf", timeTaken);
+	drawBitmapText( &b, WINDOWSIZE -90,0,0);
 
 	frames++;
 	totalFrames++;
@@ -439,13 +443,6 @@ void renderFunction()
 
 	update();
 
-glColor3f(1.0, 0.0, 1.0);
-	char buffer[16] = "<some characters";
-	char c;
-	c = sprintf(buffer, "%lf", fps);
-	drawBitmapText( &c, WINDOWSIZE -30,0,0);
-
-	
 	/*if(totalFrames == frameLimit && timeTaken == 0) {
 		
 		endTime = omp_get_wtime();
@@ -474,6 +471,12 @@ glColor3f(1.0, 0.0, 1.0);
 			}
 		}
 	}
+
+	glColor3f(1.0, 0.0, 1.0);
+	char buffer[16] = "<some characters";
+	char c;
+	c = sprintf(buffer, "%lf", fps);
+	drawBitmapText( &c, WINDOWSIZE -30,0,0);
 		
     glFlush();
 
