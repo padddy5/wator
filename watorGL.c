@@ -15,7 +15,7 @@ typedef short bool;
 #define true 1
 #define false 0
 
-#define MAPSIZE 500
+#define MAPSIZE 2000
 #define WINDOWSIZE 1000
 
 #define fishBreedAge 80
@@ -280,7 +280,7 @@ void updateCreature(short i, short j) {
 
 	if(map[i][j].moved == false) {
 		if(map[i][j].type == 0) {
-			// Move randomly
+			// Move fish randomly
 			short dir = rand() % 4;
 			if (dir == 0) {
 				moveBreedStarve(i, j, 0, 1);
@@ -295,6 +295,7 @@ void updateCreature(short i, short j) {
 				moveBreedStarve(i, j, -1, 0);
 			}
 		}
+		// Move sharks
 		else {
 			bool fishFound = false;
 			short checks = 0;
@@ -305,60 +306,65 @@ void updateCreature(short i, short j) {
 				// Look for nearby fish and eat it if one is found
 				short dir = rand() % 4;
 
-			if(dir == 0){
-					if(isFish(i-1, 0)) {
-						moveBreedStarve(i, j, -1, 0);
-						fishFound = true;
-						checks = 5;
-					} 
-					else{checks++;}
-				}
-
-				else if(dir == 1) {
-					if(isFish(i+1, 0)) {
-						moveBreedStarve(i, j, 1, 0);
-						fishFound = true;
-						checks = 5;
+				if(dir == 0){
+						if(isFish(i-1, 0)) {
+							// If fish is found move the shark
+							moveBreedStarve(i, j, -1, 0);
+							fishFound = true;
+							checks = 5;
+						} 
+						else{checks++;}
 					}
-					else{checks++;}
 
-				}
+					else if(dir == 1) {
+						// If fish is found move the shark
+						if(isFish(i+1, 0)) {
+							moveBreedStarve(i, j, 1, 0);
+							fishFound = true;
+							checks = 5;
+						}
+						else{checks++;}
 
-				else if(dir == 2) {
-					if(isFish(0, 1)) {
+					}
+
+					else if(dir == 2) {
+						// If fish is found move the shark
+						if(isFish(0, 1)) {
+							moveBreedStarve(i, j, 0, 1);
+							fishFound = true;
+							checks = 5;
+						}
+						else{checks++;}
+					}
+
+					else if(dir == 3) {
+						// If fish is found move the shark
+						if(isFish(0, -1)) {
+							moveBreedStarve(i, j, 0, -1);
+							fishFound = true;
+							checks = 5;
+						}
+						else{checks++;}
+					}
+				}		
+			
+				// If no fish is found
+				if(fishFound == false) {
+					// Move randomly
+					short dir = rand() % 4;
+					if (dir == 0) {
 						moveBreedStarve(i, j, 0, 1);
-						fishFound = true;
-						checks = 5;
 					}
-					else{checks++;}
-				}
-
-				else if(dir == 3) {
-					if(isFish(0, -1)) {
+					else if(dir == 1) {
 						moveBreedStarve(i, j, 0, -1);
-						fishFound = true;
-						checks = 5;
 					}
-					else{checks++;}
+					else if(dir == 2) {
+						moveBreedStarve(i, j, 1, 0);
+					}
+					else if(dir == 3) {
+						moveBreedStarve(i, j, -1, 0);
+					}
 				}
-			}		
-
-			if(fishFound == false) {
-				// Move randomly
-				short dir = rand() % 4;
-				if (dir == 0) {
-					moveBreedStarve(i, j, 0, 1);
-				}
-				else if(dir == 1) {
-					moveBreedStarve(i, j, 0, -1);
-				}
-				else if(dir == 2) {
-					moveBreedStarve(i, j, 1, 0);
-				}
-				else if(dir == 3) {
-					moveBreedStarve(i, j, -1, 0);
-				}
-			}
 		}
 	}
 }
@@ -373,13 +379,16 @@ void updateCreature(short i, short j) {
 */
 void moveBreedStarve(short x, short y, short dirX, short dirY) {
 		
+	// Destination grid square position
 	short destX = x+dirX;
 	short destY = y+dirY;
 
 	bool fishTarget = false;
-
+	
+	// If moving creature is a fish or if the moving creature is a shark and the target is a fish
 	if(map[destX][destY].type == -1 || (map[destX][destY].type == 0 && map[x][y].type == 1)) {
 		
+		// Wrap around x
 		if(x+dirX < 0) {
 			destX = MAPSIZE-2;	
 		}		
@@ -387,6 +396,7 @@ void moveBreedStarve(short x, short y, short dirX, short dirY) {
 			destX = 0;	
 		}
 
+		// Wrap around y
 		if(y+dirY < 0) {
 			destY = MAPSIZE-2;	
 		}		
@@ -404,7 +414,7 @@ void moveBreedStarve(short x, short y, short dirX, short dirY) {
 		map[destX][destY].age++;
 		map[destX][destY].moved = true;
 
-		//fish
+		//fish breed
 		if(map[destX][destY].type == 0) {
 			if(map[destX][destY].age >= fishBreedAge) {
 
@@ -422,7 +432,7 @@ void moveBreedStarve(short x, short y, short dirX, short dirY) {
 				map[x][y].starve = -1;
 			}
 		}	
-		//shark
+		//shark breed/starve
 		else if(map[destX][destY].type == 1) {
 			if(fishTarget == true) {
 				map[destX][destY].starve = 0;			
